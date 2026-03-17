@@ -12,8 +12,12 @@ async function main() {
   const canvas = createCanvas(size, size);
   const ctx = canvas.getContext("2d");
 
+  // Cream background
+  ctx.fillStyle = "#fdfbf7";
+  ctx.fillRect(0, 0, size, size);
+
   // Draw logo scaled to fit
-  const scale = Math.min(size / logo.width, size / logo.height);
+  const scale = Math.min(size / logo.width, size / logo.height) * 0.8;
   const w = logo.width * scale;
   const h = logo.height * scale;
   ctx.drawImage(logo, (size - w) / 2, (size - h) / 2, w, h);

@@ -6,33 +6,16 @@ import Footer from "@/components/Footer";
 import PageTransition from "@/components/PageTransition";
 import PageBackground from "@/components/PageBackground";
 
-const placeholderEvents = [
+const events = [
   {
-    title: "Film Night: Climbing Stories",
-    date: "Coming Soon",
-    location: "TBA",
+    title: "Crystallise Launch Event",
+    date: "21st March 2026",
+    location: "MURO — 845 Brayards Rd, London SE15 3RD",
     description:
-      "An evening of short films celebrating climbing culture, storytelling, and the vertical world. Grab a drink, settle in, and let the stories wash over you.",
+      "The official launch of Crystallise, hosted at MURO climbing wall. Featuring world premieres of new climbing films by Hamish McArthur and Quinn Mason, a screening of MOYO, live Q&A with the founders, raffles and giveaways from Arcteryx and Tension Climbing, plus DJ sets, food, and drinks. Spaces are limited — every ticket helps fund creativity in climbing.",
     color: "#1a1a1a",
     accent: "#c9a84c",
-  },
-  {
-    title: "Poetry & The Precipice",
-    date: "Coming Soon",
-    location: "TBA",
-    description:
-      "A reading and open-mic event exploring the intersection of climbing and creative writing. Bring your words, or just come to listen.",
-    color: "#2a2520",
-    accent: "#b8a88a",
-  },
-  {
-    title: "Workshop: Visual Storytelling",
-    date: "Coming Soon",
-    location: "TBA",
-    description:
-      "Learn the art of translating climbing experiences into compelling visual narratives. From camera to edit — an afternoon of hands-on learning.",
-    color: "#1a1a1a",
-    accent: "#d4cdc4",
+    bookingUrl: "https://climber.hellocapitan.com/muro/schedule/event/1207077/select-num-participants/",
   },
 ];
 
@@ -70,7 +53,7 @@ export default function EventsPage() {
           </motion.p>
 
           <div className="space-y-10">
-            {placeholderEvents.map((event, i) => (
+            {events.map((event, i) => (
               <motion.div
                 key={event.title}
                 initial={{ opacity: 0, y: 40 }}
@@ -130,16 +113,31 @@ export default function EventsPage() {
                     </p>
 
                     {/* Book Now button */}
-                    <button
-                      className="px-6 py-2.5 border text-sm font-[family-name:var(--font-display)] tracking-wide transition-colors cursor-not-allowed opacity-60"
-                      style={{
-                        borderColor: event.accent,
-                        color: event.accent,
-                      }}
-                      disabled
-                    >
-                      Book Now
-                    </button>
+                    {event.bookingUrl ? (
+                      <a
+                        href={event.bookingUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block px-6 py-2.5 border text-sm font-[family-name:var(--font-display)] tracking-wide transition-colors hover:bg-white/10"
+                        style={{
+                          borderColor: event.accent,
+                          color: event.accent,
+                        }}
+                      >
+                        Book Now &rarr;
+                      </a>
+                    ) : (
+                      <button
+                        className="px-6 py-2.5 border text-sm font-[family-name:var(--font-display)] tracking-wide cursor-not-allowed opacity-60"
+                        style={{
+                          borderColor: event.accent,
+                          color: event.accent,
+                        }}
+                        disabled
+                      >
+                        Book Now
+                      </button>
+                    )}
                   </div>
 
                   {/* Bottom accent */}

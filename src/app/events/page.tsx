@@ -125,32 +125,57 @@ export default function EventsPage() {
                       {event.description}
                     </p>
 
-                    {/* Book Now button */}
-                    {event.bookingUrl ? (
-                      <a
-                        href={event.bookingUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-block px-6 py-2.5 border text-sm font-[family-name:var(--font-display)] tracking-wide transition-colors hover:bg-white/10"
-                        style={{
-                          borderColor: event.accent,
-                          color: event.accent,
-                        }}
-                      >
-                        Book Now &rarr;
-                      </a>
-                    ) : (
-                      <button
-                        className="px-6 py-2.5 border text-sm font-[family-name:var(--font-display)] tracking-wide cursor-not-allowed opacity-60"
-                        style={{
-                          borderColor: event.accent,
-                          color: event.accent,
-                        }}
-                        disabled
-                      >
-                        Book Now
-                      </button>
-                    )}
+                    {/* Actions */}
+                    <div className="flex flex-wrap gap-4 items-center">
+                      {event.bookingUrl ? (
+                        <a
+                          href={event.bookingUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-block px-6 py-2.5 border text-sm font-[family-name:var(--font-display)] tracking-wide transition-colors hover:bg-white/10"
+                          style={{
+                            borderColor: event.accent,
+                            color: event.accent,
+                          }}
+                        >
+                          Book Now &rarr;
+                        </a>
+                      ) : (
+                        <button
+                          className="px-6 py-2.5 border text-sm font-[family-name:var(--font-display)] tracking-wide cursor-not-allowed opacity-60"
+                          style={{
+                            borderColor: event.accent,
+                            color: event.accent,
+                          }}
+                          disabled
+                        >
+                          Book Now
+                        </button>
+                      )}
+
+                      {event.poster && (
+                        <>
+                          <a
+                            href={event.poster}
+                            download
+                            className="inline-block px-5 py-2.5 text-sm font-[family-name:var(--font-body)] text-cream/50 hover:text-cream/80 transition-colors"
+                          >
+                            Download Poster
+                          </a>
+                          <button
+                            onClick={() => {
+                              const w = window.open("", "_blank");
+                              if (!w) return;
+                              w.document.write(`<html><head><title>${event.title}</title><style>@media print{body{margin:0}img{width:100%;height:auto}}</style></head><body><img src="${event.poster}" onload="window.print();window.close()" /></body></html>`);
+                              w.document.close();
+                            }}
+                            className="inline-block px-5 py-2.5 text-sm font-[family-name:var(--font-body)] text-cream/50 hover:text-cream/80 transition-colors cursor-pointer"
+                          >
+                            Print Poster
+                          </button>
+                        </>
+                      )}
+                    </div>
                   </div>
 
                   {/* Bottom accent */}
@@ -159,11 +184,6 @@ export default function EventsPage() {
                     style={{ backgroundColor: event.accent }}
                   />
                 </div>
-
-                {/* Print hint */}
-                <p className="text-right mt-2 font-[family-name:var(--font-body)] text-xs text-slate/40">
-                  print-friendly poster
-                </p>
               </motion.div>
             ))}
           </div>

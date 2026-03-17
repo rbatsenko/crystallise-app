@@ -8,7 +8,7 @@ import PageTransition from "@/components/PageTransition";
 import PageBackground from "@/components/PageBackground";
 
 const inputClasses =
-  "w-full bg-cream/60 border border-stone/40 rounded-none px-4 py-3 font-[family-name:var(--font-body)] text-charcoal text-sm focus:outline-none focus:border-gold transition-colors";
+  "w-full bg-cream border border-stone/40 rounded-none px-4 py-3 font-[family-name:var(--font-body)] text-charcoal text-sm focus:outline-none focus:border-gold transition-colors";
 
 const labelClasses =
   "block font-[family-name:var(--font-display)] text-sm text-charcoal mb-2";

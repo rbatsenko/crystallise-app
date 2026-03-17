@@ -7,6 +7,7 @@ import { useRef } from "react";
 import Footer from "@/components/Footer";
 import StickyNote from "@/components/StickyNote";
 import PolaroidCard from "@/components/PolaroidCard";
+import CrystalItem from "@/components/CrystalItem";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
 const navItems = [
@@ -48,7 +49,6 @@ const desktopPolaroids = [
   { src: "/images/lynn-hill-great-roof.jpg", alt: "Lynn Hill on the Great Roof", caption: "The Great Roof", cx: -350, cy: -100, rot: -5 },
   { src: "/images/lynn-hill-kgf-14-2016-the-nose.jpg", alt: "Lynn Hill on The Nose", caption: "The Nose, 1993", cx: 330, cy: -80, rot: 7 },
   { src: "/images/hamish-megatron.jpg", alt: "Hamish on Megatron", caption: "Megatron", cx: -60, cy: 200, rot: -3 },
-  { src: "/images/crystal.png", alt: "Crystal", caption: "for Dave", cx: 160, cy: 220, rot: 4 },
 ];
 
 const mobilePolaroids = [
@@ -119,6 +119,18 @@ export default function Home() {
         {polaroids.map((p, i) => (
           <PolaroidCard key={`polaroid-${isMobile ? "m" : "d"}-${i}`} index={isMobile ? i + 100 : i} constraintsRef={heroRef} small={isMobile} {...p} />
         ))}
+
+        {/* Crystal */}
+        <CrystalItem
+          index={0}
+          src="/images/crystal.png"
+          label="for Dave"
+          cx={isMobile ? 80 : 160}
+          cy={isMobile ? 160 : 220}
+          rot={4}
+          size={isMobile ? 80 : 120}
+          constraintsRef={heroRef}
+        />
 
         {/* Logo — bottom center */}
         <motion.div

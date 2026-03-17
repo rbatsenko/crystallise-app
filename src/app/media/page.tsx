@@ -40,7 +40,7 @@ const mediaCategories = [
 export default function MediaPage() {
   return (
     <PageTransition>
-      <div className="min-h-screen">
+      <div className="min-h-screen flex flex-col">
         <PageBackground />
         <div className="px-6 pt-6">
           <Link
@@ -51,7 +51,7 @@ export default function MediaPage() {
           </Link>
         </div>
 
-        <main className="max-w-3xl mx-auto px-6 py-12">
+        <main className="flex-1 max-w-3xl mx-auto px-6 py-12">
           <motion.h1
             className="font-[family-name:var(--font-display)] text-4xl text-charcoal text-center mb-4"
             initial={{ opacity: 0, y: 20 }}

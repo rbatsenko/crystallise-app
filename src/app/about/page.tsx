@@ -35,7 +35,7 @@ const pillars = [
 export default function AboutPage() {
   return (
     <PageTransition>
-      <div className="min-h-screen">
+      <div className="min-h-screen flex flex-col">
         <PageBackground />
         {/* Back nav */}
         <div className="px-6 pt-6">
@@ -47,7 +47,7 @@ export default function AboutPage() {
           </Link>
         </div>
 
-        <main className="max-w-3xl mx-auto px-6 py-12">
+        <main className="flex-1 max-w-3xl mx-auto px-6 py-12">
           {/* Header */}
           <motion.div
             className="text-center mb-16"

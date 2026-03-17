@@ -99,7 +99,7 @@ function StickyNote({
       }}
       transition={{
         duration: 0.35,
-        delay: 0.2 + index * 0.05,
+        delay: 0.2 + (index % 20) * 0.05,
         ease: "easeOut",
       }}
       style={{

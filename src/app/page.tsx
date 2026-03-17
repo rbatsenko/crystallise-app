@@ -51,7 +51,7 @@ const desktopPolaroids = [
 ];
 
 const mobilePolaroids = [
-  { src: "/images/lynn-hill-great-roof.jpg", alt: "Lynn Hill on the Great Roof", caption: "The Great Roof", cx: -100, cy: -50, rot: -5 },
+  { src: "/images/hamish-megatron.jpg", alt: "Hamish on Megatron", caption: "Megatron", cx: -100, cy: -50, rot: -5 },
 ];
 
 export default function Home() {

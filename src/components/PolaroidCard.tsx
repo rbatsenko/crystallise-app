@@ -101,7 +101,7 @@ function PolaroidCard({
       }}
       transition={{
         duration: 0.4,
-        delay: 0.4 + index * 0.08,
+        delay: 0.4 + (index % 20) * 0.08,
         ease: "easeOut",
       }}
       style={{

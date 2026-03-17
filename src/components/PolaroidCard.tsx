@@ -12,6 +12,7 @@ interface PolaroidCardProps {
   cx: number;
   cy: number;
   rot: number;
+  small?: boolean;
   constraintsRef: React.RefObject<HTMLElement | null>;
 }
 
@@ -39,6 +40,7 @@ function PolaroidCard({
   cx,
   cy,
   rot,
+  small = false,
   constraintsRef,
 }: PolaroidCardProps) {
   const [editing, setEditing] = useState(false);
@@ -48,6 +50,10 @@ function PolaroidCard({
 
   const x = useMotionValue(storedRef.current?.x ?? 0);
   const y = useMotionValue(storedRef.current?.y ?? 0);
+
+  const frameW = small ? 140 : 210;
+  const centerOffsetX = frameW / 2;
+  const centerOffsetY = small ? 90 : 130;
 
   const bringToFront = useCallback(() => {
     if (cardRef.current) {
@@ -101,8 +107,8 @@ function PolaroidCard({
       style={{
         x,
         y,
-        left: `calc(50% + ${cx}px - 105px)`,
-        top: `calc(50% + ${cy}px - 130px)`,
+        left: `calc(50% + ${cx}px - ${centerOffsetX}px)`,
+        top: `calc(50% + ${cy}px - ${centerOffsetY}px)`,
         rotate: `${rot}deg`,
         zIndex: 9,
         willChange: "transform",
@@ -118,36 +124,34 @@ function PolaroidCard({
 
       {/* Polaroid frame */}
       <div
-        className="bg-white p-2 pb-12 shadow-md"
+        className={`bg-white shadow-md ${small ? "p-1.5 pb-7" : "p-2 pb-12"}`}
         style={{
-          width: "210px",
+          width: `${frameW}px`,
           boxShadow: "0 4px 14px rgba(0,0,0,0.1), 0 1px 4px rgba(0,0,0,0.05)",
         }}
       >
-        {/* Photo */}
         <div className="relative w-full aspect-square overflow-hidden bg-gray-100">
           <Image
             src={src}
             alt={alt}
             fill
             className="object-cover object-top"
-            sizes="210px"
+            sizes={`${frameW}px`}
             draggable={false}
           />
         </div>
 
-        {/* Caption */}
         <div
           ref={captionRef}
           contentEditable={editing}
           suppressContentEditableWarning
           spellCheck={false}
           onBlur={handleBlur}
-          className="mt-2 font-[family-name:var(--font-handwritten)] text-lg text-charcoal/70 text-center outline-none whitespace-pre-wrap"
+          className={`mt-1.5 font-[family-name:var(--font-handwritten)] text-charcoal/70 text-center outline-none whitespace-pre-wrap ${small ? "text-sm" : "text-lg"}`}
           style={{
             pointerEvents: editing ? "auto" : "none",
             caretColor: "rgba(0,0,0,0.4)",
-            minHeight: "28px",
+            minHeight: small ? "20px" : "28px",
           }}
         >
           {defaultCaption}

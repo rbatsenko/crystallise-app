@@ -18,9 +18,11 @@ interface PolaroidCardProps {
 
 let polaroidZ = 8;
 
+const STORAGE_V = "v2";
+
 function getStoredPolaroid(index: number) {
   try {
-    const raw = localStorage.getItem(`polaroid-${index}`);
+    const raw = localStorage.getItem(`${STORAGE_V}-polaroid-${index}`);
     if (raw) return JSON.parse(raw) as { x: number; y: number; caption: string };
   } catch {}
   return null;
@@ -28,7 +30,7 @@ function getStoredPolaroid(index: number) {
 
 function storePolaroid(index: number, data: { x: number; y: number; caption: string }) {
   try {
-    localStorage.setItem(`polaroid-${index}`, JSON.stringify(data));
+    localStorage.setItem(`${STORAGE_V}-polaroid-${index}`, JSON.stringify(data));
   } catch {}
 }
 

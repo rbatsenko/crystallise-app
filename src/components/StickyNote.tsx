@@ -17,9 +17,11 @@ interface StickyNoteProps {
 
 let globalZ = 10;
 
+const STORAGE_V = "v2";
+
 function getStoredData(index: number) {
   try {
-    const raw = localStorage.getItem(`note-${index}`);
+    const raw = localStorage.getItem(`${STORAGE_V}-note-${index}`);
     if (raw) return JSON.parse(raw) as { x: number; y: number; text: string };
   } catch {}
   return null;
@@ -27,7 +29,7 @@ function getStoredData(index: number) {
 
 function storeData(index: number, data: { x: number; y: number; text: string }) {
   try {
-    localStorage.setItem(`note-${index}`, JSON.stringify(data));
+    localStorage.setItem(`${STORAGE_V}-note-${index}`, JSON.stringify(data));
   } catch {}
 }
 

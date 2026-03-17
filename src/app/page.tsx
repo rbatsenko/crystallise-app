@@ -63,7 +63,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <section ref={heroRef} className="relative h-screen overflow-hidden bg-[#fdfbf7]">
+      <section ref={heroRef} className="relative h-dvh overflow-hidden bg-[#fdfbf7]">
         {/* Graph Paper Grid Background */}
         <div
           className="absolute inset-0 z-0 opacity-40 mix-blend-multiply"

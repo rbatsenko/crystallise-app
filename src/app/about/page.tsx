@@ -32,6 +32,24 @@ const pillars = [
   },
 ];
 
+const team = [
+  {
+    name: "Hamish",
+    role: "Founder",
+    bio: "A climber, filmmaker, and dreamer — Hamish started Crystallise to channel the creative energy of the climbing community into something lasting.",
+  },
+  {
+    name: "Daniel",
+    role: "Co-Founder",
+    bio: "Helping shape the vision and direction of Crystallise, bringing ideas to life and keeping the momentum going.",
+  },
+  {
+    name: "Roman",
+    role: "Developer",
+    bio: "Building the digital home for Crystallise, making sure the website reflects the same care and craft as the projects it supports.",
+  },
+];
+
 export default function AboutPage() {
   return (
     <PageTransition>
@@ -118,6 +136,52 @@ export default function AboutPage() {
               </motion.div>
             ))}
           </div>
+
+          {/* The Team */}
+          <motion.div
+            className="mt-16"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8, duration: 0.6 }}
+          >
+            <h2 className="font-[family-name:var(--font-display)] text-3xl text-charcoal text-center mb-8">
+              The Team
+            </h2>
+            <div
+              className="grid grid-cols-1 sm:grid-cols-2 gap-6"
+              style={{ perspective: "800px" }}
+            >
+              {team.map((member, i) => (
+                <motion.div
+                  key={member.name}
+                  initial={{ opacity: 0, y: 20, rotateX: 5 }}
+                  animate={{ opacity: 1, y: 0, rotateX: 0 }}
+                  transition={{
+                    duration: 0.6,
+                    delay: 0.9 + i * 0.15,
+                    ease: "easeOut",
+                  }}
+                  style={{ transformStyle: "preserve-3d" }}
+                >
+                  <TornPaper
+                    color={i % 2 === 0 ? "#d4cdc4" : "#b8a88a"}
+                    rotation={i % 2 === 0 ? -1 : 1}
+                    variant={i % 2 === 0 ? 2 : 3}
+                  >
+                    <h3 className="font-[family-name:var(--font-display)] text-xl text-charcoal mb-1">
+                      {member.name}
+                    </h3>
+                    <span className="font-[family-name:var(--font-body)] text-xs text-slate/70 uppercase tracking-widest">
+                      {member.role}
+                    </span>
+                    <p className="font-[family-name:var(--font-body)] text-sm text-slate leading-relaxed mt-3">
+                      {member.bio}
+                    </p>
+                  </TornPaper>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
         </main>
 
         <Footer />

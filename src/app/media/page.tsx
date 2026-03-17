@@ -7,33 +7,49 @@ import TornPaper from "@/components/TornPaper";
 import PageTransition from "@/components/PageTransition";
 import PageBackground from "@/components/PageBackground";
 
-const mediaCategories = [
+const videos = [
   {
-    type: "Video",
-    items: [
-      { title: "The Crystal Line — Trailer", description: "A short film exploring movement and meaning on rock." },
-      { title: "Voices from the Crag", description: "Documentary series capturing diverse climbing stories." },
-    ],
-    color: "#d4cdc4",
-    rotation: -1,
+    title: "The Crystal Line — Trailer",
+    description:
+      "A short film exploring movement and meaning on rock.",
+    youtubeId: null,
+    interviews: ["Behind the lens — Director Q&A"],
   },
   {
-    type: "Written",
-    items: [
-      { title: "On Falling", description: "An essay on the art of letting go and finding trust." },
-      { title: "Stone & Story", description: "A collection of climbing narratives from around the world." },
-    ],
-    color: "#c9a84c",
-    rotation: 1,
+    title: "Voices from the Crag",
+    description:
+      "Documentary series capturing diverse climbing stories.",
+    youtubeId: null,
+    interviews: ["Interview with the climbers"],
+  },
+];
+
+const articles = [
+  {
+    title: "On Falling",
+    description: "An essay on the art of letting go and finding trust.",
+    external: false,
   },
   {
-    type: "Audio",
-    items: [
-      { title: "The Crystallise Podcast", description: "Conversations with climbers, artists, and thinkers." },
-      { title: "Soundscapes: The Vertical World", description: "Field recordings from crags and mountains." },
-    ],
-    color: "#b8a88a",
-    rotation: -0.5,
+    title: "Stone & Story",
+    description:
+      "A collection of climbing narratives from around the world.",
+    external: false,
+  },
+];
+
+const exhibitions = [
+  {
+    title: "Vertical Light",
+    artist: "TBA",
+    description:
+      "A photographic exploration of light on rock faces — from dawn walls to twilight boulders.",
+  },
+  {
+    title: "Chalk & Charcoal",
+    artist: "TBA",
+    description:
+      "Mixed-media works inspired by the textures, shapes, and movements of climbing.",
   },
 ];
 
@@ -66,41 +82,135 @@ export default function MediaPage() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.6 }}
           >
-            Creative climbing media — translating lived experience into words, photos, and film.
+            Creative climbing media — translating lived experience into words,
+            photos, and film.
           </motion.p>
 
-          <div className="space-y-10" style={{ perspective: "800px" }}>
-            {mediaCategories.map((category, i) => (
-              <motion.div
-                key={category.type}
-                initial={{ opacity: 0, y: 30, rotateX: 5 }}
-                animate={{ opacity: 1, y: 0, rotateX: 0 }}
-                transition={{
-                  duration: 0.6,
-                  delay: 0.3 + i * 0.15,
-                  ease: "easeOut",
-                }}
-                style={{ transformStyle: "preserve-3d" }}
-              >
-                <TornPaper color={category.color} rotation={category.rotation}>
-                  <h2 className="font-[family-name:var(--font-display)] text-2xl text-charcoal mb-4">
-                    {category.type}
-                  </h2>
-                  <div className="space-y-4">
-                    {category.items.map((item) => (
-                      <div key={item.title} className="border-t border-charcoal/10 pt-3">
-                        <h3 className="font-[family-name:var(--font-display)] text-base text-charcoal">
-                          {item.title}
-                        </h3>
-                        <p className="font-[family-name:var(--font-body)] text-sm text-slate mt-1">
-                          {item.description}
-                        </p>
+          <div className="space-y-12">
+            {/* Videos */}
+            <motion.div
+              initial={{ opacity: 0, y: 30, rotateX: 5 }}
+              animate={{ opacity: 1, y: 0, rotateX: 0 }}
+              transition={{ delay: 0.3, duration: 0.6, ease: "easeOut" }}
+              style={{
+                perspective: "800px",
+                transformStyle: "preserve-3d",
+              }}
+            >
+              <TornPaper color="#d4cdc4" rotation={-1}>
+                <h2 className="font-[family-name:var(--font-display)] text-2xl text-charcoal mb-6">
+                  Videos
+                </h2>
+                <div className="space-y-6">
+                  {videos.map((video) => (
+                    <div key={video.title}>
+                      {/* YouTube embed placeholder */}
+                      <div className="aspect-video bg-charcoal/10 border border-stone/30 flex items-center justify-center mb-3">
+                        <span className="font-[family-name:var(--font-body)] text-sm text-slate/50">
+                          Video coming soon
+                        </span>
                       </div>
-                    ))}
-                  </div>
-                </TornPaper>
-              </motion.div>
-            ))}
+                      <h3 className="font-[family-name:var(--font-display)] text-lg text-charcoal">
+                        {video.title}
+                      </h3>
+                      <p className="font-[family-name:var(--font-body)] text-sm text-slate mt-1">
+                        {video.description}
+                      </p>
+                      {video.interviews.length > 0 && (
+                        <div className="mt-2">
+                          {video.interviews.map((interview) => (
+                            <span
+                              key={interview}
+                              className="inline-block font-[family-name:var(--font-body)] text-xs text-gold border-b border-gold/40 mr-4"
+                            >
+                              {interview}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </TornPaper>
+            </motion.div>
+
+            {/* Articles */}
+            <motion.div
+              initial={{ opacity: 0, y: 30, rotateX: 5 }}
+              animate={{ opacity: 1, y: 0, rotateX: 0 }}
+              transition={{ delay: 0.45, duration: 0.6, ease: "easeOut" }}
+              style={{
+                perspective: "800px",
+                transformStyle: "preserve-3d",
+              }}
+            >
+              <TornPaper color="#c9a84c" rotation={1}>
+                <h2 className="font-[family-name:var(--font-display)] text-2xl text-charcoal mb-6">
+                  Articles
+                </h2>
+                <div className="space-y-5">
+                  {articles.map((article) => (
+                    <div
+                      key={article.title}
+                      className="border-t border-charcoal/10 pt-4"
+                    >
+                      <h3 className="font-[family-name:var(--font-display)] text-xl text-charcoal">
+                        {article.title}
+                      </h3>
+                      <p className="font-[family-name:var(--font-body)] text-sm text-slate mt-1">
+                        {article.description}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-6 pt-4 border-t border-charcoal/10">
+                  <p className="font-[family-name:var(--font-body)] text-xs text-slate/60">
+                    Highlighted content from external sources will appear here.
+                  </p>
+                </div>
+              </TornPaper>
+            </motion.div>
+
+            {/* Exhibitions */}
+            <motion.div
+              initial={{ opacity: 0, y: 30, rotateX: 5 }}
+              animate={{ opacity: 1, y: 0, rotateX: 0 }}
+              transition={{ delay: 0.6, duration: 0.6, ease: "easeOut" }}
+              style={{
+                perspective: "800px",
+                transformStyle: "preserve-3d",
+              }}
+            >
+              <TornPaper color="#b8a88a" rotation={-0.5}>
+                <h2 className="font-[family-name:var(--font-display)] text-2xl text-charcoal mb-6">
+                  Exhibitions
+                </h2>
+                <div className="space-y-6">
+                  {exhibitions.map((exhibition) => (
+                    <div key={exhibition.title}>
+                      {/* Gallery placeholder */}
+                      <div className="grid grid-cols-3 gap-2 mb-3">
+                        {[1, 2, 3].map((n) => (
+                          <div
+                            key={n}
+                            className="aspect-square bg-charcoal/8 border border-stone/20"
+                          />
+                        ))}
+                      </div>
+                      <h3 className="font-[family-name:var(--font-display)] text-lg text-charcoal">
+                        {exhibition.title}
+                      </h3>
+                      <span className="font-[family-name:var(--font-body)] text-xs text-slate/60 uppercase tracking-widest">
+                        {exhibition.artist}
+                      </span>
+                      <p className="font-[family-name:var(--font-body)] text-sm text-slate mt-2 leading-relaxed">
+                        {exhibition.description}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </TornPaper>
+            </motion.div>
           </div>
         </main>
 

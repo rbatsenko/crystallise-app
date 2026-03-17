@@ -45,7 +45,7 @@ const team = [
   },
   {
     name: "Roman",
-    role: "Developer",
+    role: "Software Engineer",
     bio: "Building the digital home for Crystallise, making sure the website reflects the same care and craft as the projects it supports.",
   },
 ];

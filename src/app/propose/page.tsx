@@ -60,7 +60,7 @@ export default function ProposePage() {
           </motion.p>
 
           <motion.form
-            className="torn-paper bg-warm-gray px-8 py-10 space-y-6"
+            className="torn-paper bg-white px-8 py-10 space-y-6"
             style={{ transform: "rotate(-0.5deg)" }}
             initial={{ opacity: 0, y: 30, rotateX: 5 }}
             animate={{ opacity: 1, y: 0, rotateX: 0 }}

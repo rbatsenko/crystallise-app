@@ -48,6 +48,7 @@ const desktopPolaroids = [
   { src: "/images/lynn-hill-great-roof.jpg", alt: "Lynn Hill on the Great Roof", caption: "The Great Roof", cx: -350, cy: -100, rot: -5 },
   { src: "/images/lynn-hill-kgf-14-2016-the-nose.jpg", alt: "Lynn Hill on The Nose", caption: "The Nose, 1993", cx: 330, cy: -80, rot: 7 },
   { src: "/images/hamish-megatron.jpg", alt: "Hamish on Megatron", caption: "Megatron", cx: -60, cy: 200, rot: -3 },
+  { src: "/images/crystal.jpg", alt: "Crystal", caption: "for Dave", cx: 160, cy: 220, rot: 4 },
 ];
 
 const mobilePolaroids = [

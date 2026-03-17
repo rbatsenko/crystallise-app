@@ -128,7 +128,7 @@ export default function Home() {
           cx={isMobile ? 80 : 160}
           cy={isMobile ? 160 : 220}
           rot={4}
-          size={isMobile ? 80 : 120}
+          size={isMobile ? 100 : 160}
           constraintsRef={heroRef}
         />
 

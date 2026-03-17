@@ -12,12 +12,17 @@ const events = [
     title: "Crystallise Launch",
     date: "Saturday 21st March",
     location: "MURO — 845 Brayards Rd, London SE15 3RD",
-    description:
-      "2pm — Film screenings: squ(h)amish II by Hamish McArthur, MOYO, and Spirit Quest by Quinn Mason. 3:30pm — Crystallise Launch Q&A. 5–11pm — Climbing, DJs, drinks, and food. Raffles, auctions, and giveaways from Arc'teryx and Tension Climbing.",
+    schedule: [
+      { time: "2pm", details: "Film screenings — squ(h)amish II by Hamish McArthur, MOYO, and Spirit Quest by Quinn Mason" },
+      { time: "3:30pm", details: "Crystallise Launch Q&A" },
+      { time: "5–11pm", details: "Climbing, DJs, drinks, and food" },
+    ],
+    extra: "Raffles, auctions, and giveaways from Arc'teryx and Tension Climbing.",
     color: "#1a1a1a",
     accent: "#c9a84c",
     bookingUrl: "https://www.muroclimbing.com/page/crystallise",
     poster: "/images/crystallise-launch.jpeg",
+    mapsUrl: "https://maps.google.com/?q=MURO+Climbing+845+Brayards+Rd+London+SE15+3RD",
   },
 ];
 
@@ -101,12 +106,24 @@ export default function EventsPage() {
                       >
                         {event.date}
                       </span>
-                      <span
-                        className="font-[family-name:var(--font-body)] text-xs uppercase tracking-[0.15em]"
-                        style={{ color: `${event.accent}80` }}
-                      >
-                        {event.location}
-                      </span>
+                      {event.mapsUrl ? (
+                        <a
+                          href={event.mapsUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-[family-name:var(--font-body)] text-xs uppercase tracking-[0.15em] hover:opacity-100 transition-opacity underline underline-offset-2"
+                          style={{ color: `${event.accent}80` }}
+                        >
+                          {event.location}
+                        </a>
+                      ) : (
+                        <span
+                          className="font-[family-name:var(--font-body)] text-xs uppercase tracking-[0.15em]"
+                          style={{ color: `${event.accent}80` }}
+                        >
+                          {event.location}
+                        </span>
+                      )}
                     </div>
 
                     {/* Title */}
@@ -120,10 +137,21 @@ export default function EventsPage() {
                       style={{ backgroundColor: event.accent }}
                     />
 
-                    {/* Description */}
-                    <p className="font-[family-name:var(--font-body)] text-sm text-cream/70 leading-relaxed mb-8 max-w-lg">
-                      {event.description}
-                    </p>
+                    {/* Schedule */}
+                    <div className="space-y-2 mb-4 max-w-lg">
+                      {event.schedule.map((item) => (
+                        <p key={item.time} className="font-[family-name:var(--font-body)] text-sm text-cream/70 leading-relaxed">
+                          <span className="text-cream/90 font-medium">{item.time}</span>
+                          {" — "}
+                          {item.details}
+                        </p>
+                      ))}
+                    </div>
+                    {event.extra && (
+                      <p className="font-[family-name:var(--font-body)] text-xs text-cream/50 mb-8 max-w-lg">
+                        {event.extra}
+                      </p>
+                    )}
 
                     {/* Actions */}
                     <div className="flex flex-wrap gap-4 items-center">

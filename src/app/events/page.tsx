@@ -2,20 +2,22 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import Footer from "@/components/Footer";
 import PageTransition from "@/components/PageTransition";
 import PageBackground from "@/components/PageBackground";
 
 const events = [
   {
-    title: "Crystallise Launch Event",
-    date: "21st March 2026",
+    title: "Crystallise Launch",
+    date: "Saturday 21st March",
     location: "MURO — 845 Brayards Rd, London SE15 3RD",
     description:
-      "The official launch of Crystallise, hosted at MURO climbing wall. Featuring world premieres of new climbing films by Hamish McArthur and Quinn Mason, a screening of MOYO, live Q&A with the founders, raffles and giveaways from Arcteryx and Tension Climbing, plus DJ sets, food, and drinks. Spaces are limited — every ticket helps fund creativity in climbing.",
+      "2pm — Film screenings: squ(h)amish II by Hamish McArthur, MOYO, and Spirit Quest by Quinn Mason. 3:30pm — Crystallise Launch Q&A. 5–11pm — Climbing, DJs, drinks, and food. Raffles, auctions, and giveaways from Arc'teryx and Tension Climbing.",
     color: "#1a1a1a",
     accent: "#c9a84c",
     bookingUrl: "https://www.muroclimbing.com/page/crystallise",
+    poster: "/images/crystallise-launch.jpeg",
   },
 ];
 
@@ -73,6 +75,17 @@ export default function EventsPage() {
                       "4px 6px 20px rgba(0,0,0,0.25), 0 2px 6px rgba(0,0,0,0.15)",
                   }}
                 >
+                  {/* Poster image */}
+                  {event.poster && (
+                    <Image
+                      src={event.poster}
+                      alt={`${event.title} poster`}
+                      width={800}
+                      height={1000}
+                      className="w-full"
+                    />
+                  )}
+
                   {/* Top accent bar */}
                   <div
                     className="h-1.5"

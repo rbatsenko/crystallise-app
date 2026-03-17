@@ -91,7 +91,7 @@ function CrystalItem({
 
       {/* Small paper label */}
       <div
-        className="mx-auto mt-1 px-3 py-1 bg-white/80 font-[family-name:var(--font-handwritten)] text-sm text-charcoal/70 text-center whitespace-nowrap"
+        className="mx-auto -mt-3 px-3 py-1 bg-white/80 font-[family-name:var(--font-handwritten)] text-sm text-charcoal/70 text-center whitespace-nowrap"
         style={{
           width: "fit-content",
           boxShadow: "1px 2px 4px rgba(0,0,0,0.08)",

@@ -15,7 +15,7 @@ const events = [
       "The official launch of Crystallise, hosted at MURO climbing wall. Featuring world premieres of new climbing films by Hamish McArthur and Quinn Mason, a screening of MOYO, live Q&A with the founders, raffles and giveaways from Arcteryx and Tension Climbing, plus DJ sets, food, and drinks. Spaces are limited — every ticket helps fund creativity in climbing.",
     color: "#1a1a1a",
     accent: "#c9a84c",
-    bookingUrl: "https://climber.hellocapitan.com/muro/schedule/event/1207077/select-num-participants/",
+    bookingUrl: "https://www.muroclimbing.com/page/crystallise",
   },
 ];
 

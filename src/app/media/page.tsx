@@ -7,51 +7,11 @@ import TornPaper from "@/components/TornPaper";
 import PageTransition from "@/components/PageTransition";
 import PageBackground from "@/components/PageBackground";
 
-const videos = [
-  {
-    title: "The Crystal Line — Trailer",
-    description:
-      "A short film exploring movement and meaning on rock.",
-    youtubeId: null,
-    interviews: ["Behind the lens — Director Q&A"],
-  },
-  {
-    title: "Voices from the Crag",
-    description:
-      "Documentary series capturing diverse climbing stories.",
-    youtubeId: null,
-    interviews: ["Interview with the climbers"],
-  },
-];
+const videos: { title: string; description: string; youtubeId: string | null; interviews: string[] }[] = [];
 
-const articles = [
-  {
-    title: "On Falling",
-    description: "An essay on the art of letting go and finding trust.",
-    external: false,
-  },
-  {
-    title: "Stone & Story",
-    description:
-      "A collection of climbing narratives from around the world.",
-    external: false,
-  },
-];
+const articles: { title: string; description: string; external: boolean }[] = [];
 
-const exhibitions = [
-  {
-    title: "Vertical Light",
-    artist: "TBA",
-    description:
-      "A photographic exploration of light on rock faces — from dawn walls to twilight boulders.",
-  },
-  {
-    title: "Chalk & Charcoal",
-    artist: "TBA",
-    description:
-      "Mixed-media works inspired by the textures, shapes, and movements of climbing.",
-  },
-];
+const exhibitions: { title: string; artist: string; description: string }[] = [];
 
 export default function MediaPage() {
   return (
@@ -98,39 +58,44 @@ export default function MediaPage() {
               }}
             >
               <TornPaper color="#d4cdc4" rotation={-1}>
-                <h2 className="font-[family-name:var(--font-display)] text-2xl text-charcoal mb-6">
+                <h2 className="font-[family-name:var(--font-display)] text-2xl text-charcoal mb-4">
                   Videos
                 </h2>
-                <div className="space-y-6">
-                  {videos.map((video) => (
-                    <div key={video.title}>
-                      {/* YouTube embed placeholder */}
-                      <div className="aspect-video bg-charcoal/10 border border-stone/30 flex items-center justify-center mb-3">
-                        <span className="font-[family-name:var(--font-body)] text-sm text-slate/50">
-                          Video coming soon
-                        </span>
-                      </div>
-                      <h3 className="font-[family-name:var(--font-display)] text-lg text-charcoal">
-                        {video.title}
-                      </h3>
-                      <p className="font-[family-name:var(--font-body)] text-sm text-slate mt-1">
-                        {video.description}
-                      </p>
-                      {video.interviews.length > 0 && (
-                        <div className="mt-2">
-                          {video.interviews.map((interview) => (
-                            <span
-                              key={interview}
-                              className="inline-block font-[family-name:var(--font-body)] text-xs text-gold border-b border-gold/40 mr-4"
-                            >
-                              {interview}
-                            </span>
-                          ))}
+                {videos.length > 0 ? (
+                  <div className="space-y-6">
+                    {videos.map((video) => (
+                      <div key={video.title}>
+                        <div className="aspect-video bg-charcoal/10 border border-stone/30 flex items-center justify-center mb-3">
+                          <span className="font-[family-name:var(--font-body)] text-sm text-slate/50">
+                            Video coming soon
+                          </span>
                         </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
+                        <h3 className="font-[family-name:var(--font-display)] text-lg text-charcoal">
+                          {video.title}
+                        </h3>
+                        <p className="font-[family-name:var(--font-body)] text-sm text-slate mt-1">
+                          {video.description}
+                        </p>
+                        {video.interviews.length > 0 && (
+                          <div className="mt-2">
+                            {video.interviews.map((interview) => (
+                              <span
+                                key={interview}
+                                className="inline-block font-[family-name:var(--font-body)] text-xs text-gold border-b border-gold/40 mr-4"
+                              >
+                                {interview}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="font-[family-name:var(--font-body)] text-sm text-slate/60">
+                    Films and videos will be shared here once they&apos;re ready.
+                  </p>
+                )}
               </TornPaper>
             </motion.div>
 
@@ -145,29 +110,30 @@ export default function MediaPage() {
               }}
             >
               <TornPaper color="#c9a84c" rotation={1}>
-                <h2 className="font-[family-name:var(--font-display)] text-2xl text-charcoal mb-6">
+                <h2 className="font-[family-name:var(--font-display)] text-2xl text-charcoal mb-4">
                   Articles
                 </h2>
-                <div className="space-y-5">
-                  {articles.map((article) => (
-                    <div
-                      key={article.title}
-                      className="border-t border-charcoal/10 pt-4"
-                    >
-                      <h3 className="font-[family-name:var(--font-display)] text-xl text-charcoal">
-                        {article.title}
-                      </h3>
-                      <p className="font-[family-name:var(--font-body)] text-sm text-slate mt-1">
-                        {article.description}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-6 pt-4 border-t border-charcoal/10">
-                  <p className="font-[family-name:var(--font-body)] text-xs text-slate/60">
-                    Highlighted content from external sources will appear here.
+                {articles.length > 0 ? (
+                  <div className="space-y-5">
+                    {articles.map((article) => (
+                      <div
+                        key={article.title}
+                        className="border-t border-charcoal/10 pt-4"
+                      >
+                        <h3 className="font-[family-name:var(--font-display)] text-xl text-charcoal">
+                          {article.title}
+                        </h3>
+                        <p className="font-[family-name:var(--font-body)] text-sm text-slate mt-1">
+                          {article.description}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="font-[family-name:var(--font-body)] text-sm text-slate/60">
+                    Written pieces and interviews will live here.
                   </p>
-                </div>
+                )}
               </TornPaper>
             </motion.div>
 
@@ -182,33 +148,38 @@ export default function MediaPage() {
               }}
             >
               <TornPaper color="#b8a88a" rotation={-0.5}>
-                <h2 className="font-[family-name:var(--font-display)] text-2xl text-charcoal mb-6">
+                <h2 className="font-[family-name:var(--font-display)] text-2xl text-charcoal mb-4">
                   Exhibitions
                 </h2>
-                <div className="space-y-6">
-                  {exhibitions.map((exhibition) => (
-                    <div key={exhibition.title}>
-                      {/* Gallery placeholder */}
-                      <div className="grid grid-cols-3 gap-2 mb-3">
-                        {[1, 2, 3].map((n) => (
-                          <div
-                            key={n}
-                            className="aspect-square bg-charcoal/8 border border-stone/20"
-                          />
-                        ))}
+                {exhibitions.length > 0 ? (
+                  <div className="space-y-6">
+                    {exhibitions.map((exhibition) => (
+                      <div key={exhibition.title}>
+                        <div className="grid grid-cols-3 gap-2 mb-3">
+                          {[1, 2, 3].map((n) => (
+                            <div
+                              key={n}
+                              className="aspect-square bg-charcoal/8 border border-stone/20"
+                            />
+                          ))}
+                        </div>
+                        <h3 className="font-[family-name:var(--font-display)] text-lg text-charcoal">
+                          {exhibition.title}
+                        </h3>
+                        <span className="font-[family-name:var(--font-body)] text-xs text-slate/60 uppercase tracking-widest">
+                          {exhibition.artist}
+                        </span>
+                        <p className="font-[family-name:var(--font-body)] text-sm text-slate mt-2 leading-relaxed">
+                          {exhibition.description}
+                        </p>
                       </div>
-                      <h3 className="font-[family-name:var(--font-display)] text-lg text-charcoal">
-                        {exhibition.title}
-                      </h3>
-                      <span className="font-[family-name:var(--font-body)] text-xs text-slate/60 uppercase tracking-widest">
-                        {exhibition.artist}
-                      </span>
-                      <p className="font-[family-name:var(--font-body)] text-sm text-slate mt-2 leading-relaxed">
-                        {exhibition.description}
-                      </p>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="font-[family-name:var(--font-body)] text-sm text-slate/60">
+                    Photo and art exhibitions will be showcased here.
+                  </p>
+                )}
               </TornPaper>
             </motion.div>
           </div>

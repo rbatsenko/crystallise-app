@@ -4,6 +4,8 @@ import { motion, useMotionValue } from "framer-motion";
 import { memo, useRef, useCallback } from "react";
 import Image from "next/image";
 
+const STORAGE_V = "v2";
+
 interface CrystalItemProps {
   index: number;
   src: string;
@@ -13,6 +15,20 @@ interface CrystalItemProps {
   rot: number;
   size?: number;
   constraintsRef: React.RefObject<HTMLElement | null>;
+}
+
+function getStored(index: number) {
+  try {
+    const raw = localStorage.getItem(`${STORAGE_V}-crystal-${index}`);
+    if (raw) return JSON.parse(raw) as { x: number; y: number };
+  } catch {}
+  return null;
+}
+
+function store(index: number, data: { x: number; y: number }) {
+  try {
+    localStorage.setItem(`${STORAGE_V}-crystal-${index}`, JSON.stringify(data));
+  } catch {}
 }
 
 let crystalZ = 12;
@@ -28,8 +44,9 @@ function CrystalItem({
   constraintsRef,
 }: CrystalItemProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
+  const storedRef = useRef(getStored(index));
+  const x = useMotionValue(storedRef.current?.x ?? 0);
+  const y = useMotionValue(storedRef.current?.y ?? 0);
 
   const bringToFront = useCallback(() => {
     if (ref.current) {
@@ -48,6 +65,7 @@ function CrystalItem({
       dragMomentum={false}
       dragTransition={{ bounceStiffness: 300, bounceDamping: 30 }}
       onDragStart={bringToFront}
+      onDragEnd={() => store(index, { x: x.get(), y: y.get() })}
       onPointerDown={bringToFront}
       initial={{ opacity: 0, scale: 0.4 }}
       animate={{ opacity: 1, scale: 1 }}

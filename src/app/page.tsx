@@ -33,7 +33,7 @@ export default function Home() {
           alt=""
           fill
           priority
-          className="object-contain object-center select-none pointer-events-none"
+          className="object-cover object-top md:object-contain md:object-center select-none pointer-events-none"
         />
 
         {/* Nav — dead center */}

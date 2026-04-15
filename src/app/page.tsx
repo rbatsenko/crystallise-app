@@ -14,32 +14,46 @@ const navItems = [
   { label: "Media", href: "/media", rotation: -1.5, offsetX: -18 },
 ];
 
-// Matches the grey backdrop baked into hero-bg.png so letterbox blends on desktop
+// Grey backdrop baked into hero-bg.png — used to fill letterbox areas on desktop
 const HERO_BG_COLOR = "#8a8a8a";
 
 export default function Home() {
   const isMobile = useIsMobile();
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <section
-        className="relative h-dvh overflow-hidden"
-        style={{ backgroundColor: HERO_BG_COLOR }}
-      >
-        {/* Hero background artwork — letterboxed (object-contain) so the full
-            composition (crystals, climber, rock, CRYSTALLISE wordmark) stays visible */}
+    <div
+      className="relative min-h-dvh flex flex-col overflow-hidden"
+      style={{ backgroundColor: HERO_BG_COLOR }}
+    >
+      {/* Mobile: full-width image pinned to top at natural aspect — extends below
+          the first viewport so scrolling reveals the climber + CRYSTALLISE wordmark */}
+      <div className="md:hidden absolute top-0 left-1/2 -translate-x-1/2 w-[115%] pointer-events-none select-none z-0">
+        <Image
+          src="/images/hero-bg.png"
+          alt=""
+          width={1500}
+          height={3248}
+          className="w-full h-auto"
+          priority
+        />
+      </div>
+
+      {/* Desktop: letterboxed contain so the full composition stays visible */}
+      <div className="hidden md:block fixed inset-0 pointer-events-none select-none z-0">
         <Image
           src="/images/hero-bg.png"
           alt=""
           fill
+          className="object-contain object-center"
           priority
-          className="object-cover object-top md:object-contain md:object-center select-none pointer-events-none"
         />
+      </div>
 
-        {/* Nav — dead center */}
+      {/* Hero — nav centered in first viewport */}
+      <section className="relative z-10 h-dvh flex items-center justify-center">
         <div
-          className="absolute z-10 flex flex-col items-center gap-3 md:gap-4"
-          style={{ top: "50%", left: "50%", transform: "translate(-50%, -50%)", perspective: "600px" }}
+          className="flex flex-col items-center gap-3 md:gap-4"
+          style={{ perspective: "600px" }}
         >
           {navItems.map((item, i) => (
             <motion.div
@@ -64,7 +78,6 @@ export default function Home() {
             </motion.div>
           ))}
 
-          {/* Small stone-face mark beneath the nav */}
           <motion.div
             className="mt-4 md:mt-6"
             initial={{ opacity: 0, y: 10 }}
@@ -83,7 +96,17 @@ export default function Home() {
         </div>
       </section>
 
-      <Footer />
+      {/* Spacer on mobile so the rest of the background image (climber + wordmark)
+          is scroll-revealed before the footer. Uses the image's natural aspect
+          (1500/3248 ≈ 0.462) minus one viewport. */}
+      <div
+        className="md:hidden relative z-10"
+        style={{ height: "calc(100vw * 1.15 * 3248 / 1500 - 100dvh)" }}
+      />
+
+      <div className="relative z-10">
+        <Footer transparent />
+      </div>
     </div>
   );
 }

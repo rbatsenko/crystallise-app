@@ -1,9 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Footer() {
+export default function Footer({ transparent = false }: { transparent?: boolean }) {
   return (
-    <footer className="relative z-50 bg-white border-t border-stone/30 py-12 px-6">
+    <footer
+      className={`relative z-50 py-12 px-6 ${
+        transparent ? "bg-transparent" : "bg-white border-t border-stone/30"
+      }`}
+    >
       <div className="max-w-4xl mx-auto flex flex-col items-center gap-6">
         <Link href="/" className="hover:opacity-80 transition-opacity">
           <Image

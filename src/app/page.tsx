@@ -21,7 +21,7 @@ export default function Home() {
 
   return (
     <section
-      className="relative h-dvh overflow-hidden"
+      className="relative h-dvh min-h-screen overflow-hidden"
       style={{ backgroundColor: HERO_BG_COLOR }}
     >
       {/* Hero artwork fills the whole viewport */}

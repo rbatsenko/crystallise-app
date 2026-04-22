@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import PageBackground from "@/components/PageBackground";
 
 const navItems = [
   { label: "Support an Idea", href: "/support", image: "/images/nav/support-an-idea.png", rotation: -2, offsetX: -15 },
@@ -13,13 +14,10 @@ const navItems = [
   { label: "Media", href: "/media", image: "/images/nav/media.png", rotation: -1.5, offsetX: -18 },
 ];
 
-// Grey backdrop baked into the hero artwork
-const HERO_BG_COLOR = "#8a8a8a";
-
-// Nav images are 2619×708 @3x → logical 873×236, rendered smaller on-screen
+// Nav images are 840×227 — rendered smaller on-screen
 const NAV_WIDTH_MOBILE = 200;
 const NAV_WIDTH_DESKTOP = 280;
-const NAV_ASPECT = 2619 / 708; // ≈ 3.7
+const NAV_ASPECT = 840 / 227;
 
 export default function Home() {
   const isMobile = useIsMobile();
@@ -27,26 +25,8 @@ export default function Home() {
   const navH = Math.round(navW / NAV_ASPECT);
 
   return (
-    <section
-      className="relative h-dvh min-h-screen overflow-hidden"
-      style={{ backgroundColor: HERO_BG_COLOR }}
-    >
-      {/* Mobile: portrait artwork */}
-      <Image
-        src="/images/hero-bg.png"
-        alt=""
-        fill
-        priority
-        className="object-cover object-top md:hidden select-none pointer-events-none"
-      />
-      {/* Desktop: landscape artwork (blank, no baked-in nav) */}
-      <Image
-        src="/images/hero-bg-desktop.png"
-        alt=""
-        fill
-        priority
-        className="hidden md:block object-cover object-center select-none pointer-events-none"
-      />
+    <section className="relative h-dvh min-h-screen overflow-hidden">
+      <PageBackground />
 
       {/* Nav — centered */}
       <div

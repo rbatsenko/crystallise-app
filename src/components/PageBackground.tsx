@@ -1,18 +1,26 @@
+import Image from "next/image";
+
+const HERO_BG_COLOR = "#8a8a8a";
+
 export default function PageBackground() {
   return (
-    <>
-      <div
-        className="fixed inset-0 z-0 opacity-20 mix-blend-multiply pointer-events-none"
-        style={{
-          backgroundImage: `
-            linear-gradient(to right, rgba(120, 140, 200, 0.4) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(120, 140, 200, 0.4) 1px, transparent 1px)
-          `,
-          backgroundSize: "40px 40px",
-          backgroundPosition: "center top",
-        }}
+    <div className="fixed inset-0 z-0 pointer-events-none select-none" style={{ backgroundColor: HERO_BG_COLOR }}>
+      {/* Mobile: portrait artwork */}
+      <Image
+        src="/images/hero-bg.jpg"
+        alt=""
+        fill
+        className="object-cover object-top md:hidden"
+        priority
       />
-      <div className="fixed inset-0 z-0 pointer-events-none opacity-30 mix-blend-multiply bg-[url('/images/paper-texture.png')] bg-repeat" />
-    </>
+      {/* Desktop: landscape artwork */}
+      <Image
+        src="/images/hero-bg-desktop.jpg"
+        alt=""
+        fill
+        className="hidden md:block object-cover object-center"
+        priority
+      />
+    </div>
   );
 }

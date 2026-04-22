@@ -1,0 +1,21 @@
+{
+  "name": "@crystallise/supabase",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./server": "./src/server.ts",
+    "./admin": "./src/admin.ts",
+    "./browser": "./src/browser.ts",
+    "./types": "./src/types.ts"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.7.0",
+    "@supabase/supabase-js": "^2.58.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "next": "16.1.7",
+    "typescript": "^5"
+  }
+}

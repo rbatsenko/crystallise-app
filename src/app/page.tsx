@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, useMotionValue } from "framer-motion";
 import { useRef, useCallback } from "react";
@@ -40,25 +41,25 @@ function DraggableNavItem({
   const router = useRouter();
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const hasDragged = useRef(false);
+  const pointerStart = useRef<{ x: number; y: number } | null>(null);
 
-  const handleDragStart = useCallback(() => {
-    hasDragged.current = false;
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    pointerStart.current = { x: e.clientX, y: e.clientY };
   }, []);
 
-  const handleDrag = useCallback(() => {
-    if (Math.abs(x.get()) > DRAG_THRESHOLD || Math.abs(y.get()) > DRAG_THRESHOLD) {
-      hasDragged.current = true;
-    }
-  }, [x, y]);
-
-  // Works on both mouse click and mobile tap — framer-motion's onTap
-  // fires after pointerup only if there was no drag
-  const handleTap = useCallback(() => {
-    if (!hasDragged.current) {
-      router.push(item.href);
-    }
-  }, [router, item.href]);
+  const handlePointerUp = useCallback(
+    (e: React.PointerEvent) => {
+      if (!pointerStart.current) return;
+      const dx = Math.abs(e.clientX - pointerStart.current.x);
+      const dy = Math.abs(e.clientY - pointerStart.current.y);
+      pointerStart.current = null;
+      // If pointer barely moved, treat as a tap/click → navigate
+      if (dx < DRAG_THRESHOLD && dy < DRAG_THRESHOLD) {
+        router.push(item.href);
+      }
+    },
+    [router, item.href],
+  );
 
   return (
     <motion.div
@@ -67,15 +68,15 @@ function DraggableNavItem({
       dragElastic={0.08}
       dragMomentum={false}
       dragTransition={{ bounceStiffness: 300, bounceDamping: 30 }}
-      onDragStart={handleDragStart}
-      onDrag={handleDrag}
-      onTap={handleTap}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
       style={{
         x,
         y,
         transformStyle: "preserve-3d",
         marginLeft: `${isMobile ? item.offsetX * 0.5 : item.offsetX}px`,
         cursor: "grab",
+        touchAction: "none",
       }}
       initial={{ opacity: 0, y: 40, rotateX: 15, rotateZ: item.rotation * 3 }}
       animate={{ opacity: 1, y: 0, rotateZ: item.rotation }}
@@ -88,14 +89,17 @@ function DraggableNavItem({
         transition: { duration: 0 },
       }}
     >
-      <Image
-        src={item.image}
-        alt={item.label}
-        width={navW}
-        height={navH}
-        className="select-none drop-shadow-lg pointer-events-none"
-        draggable={false}
-      />
+      {/* Link for SEO / accessibility — clicks handled by pointerUp above */}
+      <Link href={item.href} className="block" draggable={false} tabIndex={-1} onClick={(e) => e.preventDefault()}>
+        <Image
+          src={item.image}
+          alt={item.label}
+          width={navW}
+          height={navH}
+          className="select-none drop-shadow-lg pointer-events-none"
+          draggable={false}
+        />
+      </Link>
     </motion.div>
   );
 }

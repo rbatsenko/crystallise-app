@@ -80,6 +80,7 @@ export type Database = {
     }
     Functions: {
       is_admin: { Args: never; Returns: boolean }
+      is_allowlisted: { Args: { check_email: string }; Returns: boolean }
     }
     Enums: {
       proposal_status: "new" | "reviewing" | "accepted" | "declined"

@@ -48,6 +48,22 @@ function LoginForm() {
       return;
     }
 
+    // Silently short-circuit for non-allowlisted emails: same UX, but no
+    // email is sent so we don't burn the inbound SMTP rate limit on strangers.
+    const { data: allowed, error: rpcError } = await supabase.rpc(
+      "is_allowlisted",
+      { check_email: email.trim() },
+    );
+    if (rpcError) {
+      setState("error");
+      setErrorMsg(rpcError.message);
+      return;
+    }
+    if (!allowed) {
+      setState("magic_sent");
+      return;
+    }
+
     const { error } = await supabase.auth.signInWithOtp({
       email: email.trim(),
       options: {

@@ -5,13 +5,11 @@ import Link from "next/link";
 import Footer from "@/components/Footer";
 import TornPaper from "@/components/TornPaper";
 import PageTransition from "@/components/PageTransition";
-import PageBackground from "@/components/PageBackground";
 
 export default function SupportPage() {
   return (
     <PageTransition>
       <div className="min-h-screen flex flex-col">
-        <PageBackground />
         <div className="px-6 pt-6">
           <Link
             href="/"

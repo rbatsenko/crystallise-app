@@ -5,7 +5,6 @@ import Link from "next/link";
 import Footer from "@/components/Footer";
 import TornPaper from "@/components/TornPaper";
 import PageTransition from "@/components/PageTransition";
-import PageBackground from "@/components/PageBackground";
 
 const videos: { title: string; description: string; youtubeId: string | null; interviews: string[] }[] = [];
 
@@ -17,7 +16,6 @@ export default function MediaPage() {
   return (
     <PageTransition>
       <div className="min-h-screen flex flex-col">
-        <PageBackground />
         <div className="px-6 pt-6">
           <Link
             href="/"

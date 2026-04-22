@@ -6,7 +6,7 @@ import Image from "next/image";
 import Footer from "@/components/Footer";
 import TornPaper from "@/components/TornPaper";
 import PageTransition from "@/components/PageTransition";
-import PageBackground from "@/components/PageBackground";
+
 
 const pillars = [
   {
@@ -54,7 +54,6 @@ export default function AboutPage() {
   return (
     <PageTransition>
       <div className="min-h-screen flex flex-col">
-        <PageBackground />
         {/* Back nav */}
         <div className="px-6 pt-6">
           <Link

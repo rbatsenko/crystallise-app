@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useIsMobile } from "@/hooks/useIsMobile";
-import PageBackground from "@/components/PageBackground";
+
 
 const navItems = [
   { label: "Support an Idea", href: "/support", image: "/images/nav/support-an-idea.png", rotation: -2, offsetX: -15 },
@@ -26,8 +26,6 @@ export default function Home() {
 
   return (
     <section className="relative h-dvh min-h-screen overflow-hidden">
-      <PageBackground />
-
       {/* Nav — centered */}
       <div
         className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-1 md:gap-2"

@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import Footer from "@/components/Footer";
 import PageTransition from "@/components/PageTransition";
-import PageBackground from "@/components/PageBackground";
 
 const events = [
   {
@@ -30,7 +29,6 @@ export default function EventsPage() {
   return (
     <PageTransition>
       <div className="min-h-screen flex flex-col">
-        <PageBackground />
         <div className="px-6 pt-6">
           <Link
             href="/"

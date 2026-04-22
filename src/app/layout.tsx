@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Playfair_Display, DM_Sans, Caveat } from "next/font/google";
+import PageBackground from "@/components/PageBackground";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -61,6 +62,7 @@ export default function RootLayout({
       <body
         className={`${playfair.variable} ${dmSans.variable} ${caveat.variable} antialiased min-h-screen bg-[#fdfbf7]`}
       >
+        <PageBackground />
         {children}
       </body>
     </html>

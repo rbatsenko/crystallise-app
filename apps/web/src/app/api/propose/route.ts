@@ -121,6 +121,10 @@ export async function POST(request: NextRequest) {
     name,
     email,
     overview,
+    deliverables,
+    budget,
+    budget_breakdown,
+    additional,
     imageCount: imagePaths.length,
   }).catch((err) => console.error("[propose] slack notify failed", err));
 
@@ -151,49 +155,113 @@ async function notifySlack(proposal: {
   name: string;
   email: string;
   overview: string;
+  deliverables: string;
+  budget: string;
+  budget_breakdown: string;
+  additional: string;
   imageCount: number;
 }) {
   const url = process.env.SLACK_WEBHOOK_URL;
   if (!url) return;
 
-  const text = `New proposal from ${proposal.name}`;
-  const body = {
-    text,
-    blocks: [
-      {
-        type: "header",
-        text: { type: "plain_text", text: "📨 New proposal" },
+  const adminUrl = process.env.ADMIN_URL;
+
+  type Block =
+    | { type: "header"; text: { type: "plain_text"; text: string } }
+    | { type: "divider" }
+    | {
+        type: "section";
+        text?: { type: "mrkdwn"; text: string };
+        fields?: { type: "mrkdwn"; text: string }[];
+      }
+    | {
+        type: "context";
+        elements: { type: "mrkdwn"; text: string }[];
+      };
+
+  const blocks: Block[] = [
+    {
+      type: "header",
+      text: { type: "plain_text", text: "✨ New proposal" },
+    },
+    {
+      type: "section",
+      fields: [
+        { type: "mrkdwn", text: `*From*\n${proposal.name}` },
+        { type: "mrkdwn", text: `*Email*\n<mailto:${proposal.email}|${proposal.email}>` },
+      ],
+    },
+    { type: "divider" },
+    {
+      type: "section",
+      text: {
+        type: "mrkdwn",
+        text: `*Overview*\n${truncate(proposal.overview, 600)}`,
       },
-      {
-        type: "section",
-        fields: [
-          { type: "mrkdwn", text: `*Name*\n${proposal.name}` },
-          { type: "mrkdwn", text: `*Email*\n${proposal.email}` },
-        ],
+    },
+  ];
+
+  if (proposal.deliverables) {
+    blocks.push({
+      type: "section",
+      text: {
+        type: "mrkdwn",
+        text: `*Deliverables*\n${truncate(proposal.deliverables, 400)}`,
       },
-      {
-        type: "section",
-        text: {
-          type: "mrkdwn",
-          text: `*Overview*\n${truncate(proposal.overview, 400)}`,
-        },
+    });
+  }
+
+  if (proposal.budget || proposal.budget_breakdown) {
+    const budgetFields: { type: "mrkdwn"; text: string }[] = [];
+    if (proposal.budget) {
+      budgetFields.push({
+        type: "mrkdwn",
+        text: `*Budget*\n${truncate(proposal.budget, 200)}`,
+      });
+    }
+    if (proposal.budget_breakdown) {
+      budgetFields.push({
+        type: "mrkdwn",
+        text: `*Breakdown*\n${truncate(proposal.budget_breakdown, 400)}`,
+      });
+    }
+    blocks.push({ type: "section", fields: budgetFields });
+  }
+
+  if (proposal.additional) {
+    blocks.push({
+      type: "section",
+      text: {
+        type: "mrkdwn",
+        text: `*Additional*\n${truncate(proposal.additional, 400)}`,
       },
-      {
-        type: "context",
-        elements: [
-          {
-            type: "mrkdwn",
-            text: `Images: ${proposal.imageCount} · ID: \`${proposal.id}\``,
-          },
-        ],
-      },
-    ],
-  };
+    });
+  }
+
+  const contextParts: string[] = [];
+  contextParts.push(
+    proposal.imageCount > 0
+      ? `🖼️ ${proposal.imageCount} image${proposal.imageCount === 1 ? "" : "s"}`
+      : "No images",
+  );
+  if (adminUrl) {
+    contextParts.push(`<${adminUrl}/proposals/${proposal.id}|Open in admin ↗>`);
+  } else {
+    contextParts.push(`ID: \`${proposal.id.slice(0, 8)}\``);
+  }
+  blocks.push({ type: "divider" });
+  blocks.push({
+    type: "context",
+    elements: [{ type: "mrkdwn", text: contextParts.join(" · ") }],
+  });
 
   const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
+    body: JSON.stringify({
+      text: `New proposal from ${proposal.name}`,
+      blocks,
+    }),
   });
   if (!res.ok) {
     throw new Error(`Slack webhook ${res.status}: ${await res.text()}`);

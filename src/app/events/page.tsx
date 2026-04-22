@@ -41,8 +41,8 @@ export default function EventsPage() {
         <main className="flex-1 max-w-3xl mx-auto px-6 py-12">
           <motion.div
             className="bg-black/20 backdrop-blur-sm rounded-2xl px-8 py-6 mb-12 max-w-md mx-auto"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ y: 20 }}
+            animate={{ y: 0 }}
             transition={{ duration: 0.6 }}
           >
             <h1 className="font-[family-name:var(--font-display)] text-4xl text-white text-center mb-3">
@@ -59,7 +59,7 @@ export default function EventsPage() {
               <motion.div
                 key={event.title}
                 initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
+                animate={{ y: 0 }}
                 transition={{
                   duration: 0.6,
                   delay: 0.3 + i * 0.15,

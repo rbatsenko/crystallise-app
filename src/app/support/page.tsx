@@ -22,8 +22,8 @@ export default function SupportPage() {
         <main className="max-w-2xl mx-auto px-6 py-12 flex-1">
           <motion.div
             className="bg-black/20 backdrop-blur-sm rounded-2xl px-8 py-6 mb-12 max-w-md mx-auto"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ y: 20 }}
+            animate={{ y: 0 }}
             transition={{ duration: 0.6 }}
           >
             <h1 className="font-[family-name:var(--font-display)] text-4xl text-white text-center mb-3">

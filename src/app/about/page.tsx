@@ -68,8 +68,8 @@ export default function AboutPage() {
           {/* Header + Mission */}
           <motion.div
             className="bg-black/20 backdrop-blur-sm rounded-2xl px-8 py-8 mb-16 max-w-xl mx-auto text-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ y: 20 }}
+            animate={{ y: 0 }}
             transition={{ duration: 0.6 }}
           >
             <Image

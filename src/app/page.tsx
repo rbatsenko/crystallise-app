@@ -79,7 +79,7 @@ function DraggableNavItem({
       initial={{ opacity: 0, y: 40, rotateX: 15, rotateZ: item.rotation * 3 }}
       animate={{ opacity: 1, y: 0, rotateZ: item.rotation }}
       transition={{ duration: 0.7, delay: 0.5 + index * 0.12, ease: [0.25, 0.46, 0.45, 0.94] }}
-      whileHover={{ rotateZ: 0, y: -6, scale: 1.08, transition: { duration: 0.3 } }}
+      whileHover={{ rotateZ: 0, scale: 1.08, transition: { duration: 0.3 } }}
       whileDrag={{
         scale: 1.1,
         rotateZ: 0,

@@ -13,7 +13,7 @@ export default function SupportPage() {
         <div className="px-6 pt-6">
           <Link
             href="/"
-            className="text-slate hover:text-charcoal transition-colors font-[family-name:var(--font-body)] text-sm"
+            className="text-white/70 hover:text-white transition-colors font-[family-name:var(--font-body)] text-sm"
           >
             &larr; Back
           </Link>
@@ -21,7 +21,7 @@ export default function SupportPage() {
 
         <main className="max-w-2xl mx-auto px-6 py-12 flex-1">
           <motion.h1
-            className="font-[family-name:var(--font-display)] text-4xl text-charcoal text-center mb-4"
+            className="font-[family-name:var(--font-display)] text-4xl text-white text-center mb-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -29,7 +29,7 @@ export default function SupportPage() {
             Support an Idea
           </motion.h1>
           <motion.p
-            className="font-[family-name:var(--font-body)] text-slate text-center mb-12 max-w-md mx-auto"
+            className="font-[family-name:var(--font-body)] text-white/80 text-center mb-12 max-w-md mx-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.6 }}

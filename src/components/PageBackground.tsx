@@ -4,7 +4,7 @@ const HERO_BG_COLOR = "#8a8a8a";
 
 export default function PageBackground() {
   return (
-    <div className="fixed inset-0 z-0 pointer-events-none select-none" style={{ backgroundColor: HERO_BG_COLOR }}>
+    <div className="fixed inset-0 -z-10 pointer-events-none select-none" style={{ backgroundColor: HERO_BG_COLOR }}>
       {/* Mobile: portrait artwork */}
       <Image
         src="/images/hero-bg.jpg"

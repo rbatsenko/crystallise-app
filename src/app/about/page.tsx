@@ -58,7 +58,7 @@ export default function AboutPage() {
         <div className="px-6 pt-6">
           <Link
             href="/"
-            className="text-slate hover:text-charcoal transition-colors font-[family-name:var(--font-body)] text-sm"
+            className="text-white/70 hover:text-white transition-colors font-[family-name:var(--font-body)] text-sm"
           >
             &larr; Back
           </Link>
@@ -79,7 +79,7 @@ export default function AboutPage() {
               height={48}
               className="mx-auto mb-8"
             />
-            <p className="font-[family-name:var(--font-body)] text-lg text-slate max-w-xl mx-auto leading-relaxed">
+            <p className="font-[family-name:var(--font-body)] text-lg text-white/80 max-w-xl mx-auto leading-relaxed">
               A non-profit organisation focused on developing the arts and
               culture within climbing media.
             </p>
@@ -92,7 +92,7 @@ export default function AboutPage() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.6 }}
           >
-            <p className="font-[family-name:var(--font-body)] text-base text-slate leading-relaxed max-w-lg mx-auto">
+            <p className="font-[family-name:var(--font-body)] text-base text-white/80 leading-relaxed max-w-lg mx-auto">
               We are at a key moment in the history of our sport — our lifestyle.
               Will we seek expression or attention? Inspiration or cash? Love or
               cynicism? Crystallise is a gentle nudge towards the former, and a
@@ -143,7 +143,7 @@ export default function AboutPage() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8, duration: 0.6 }}
           >
-            <h2 className="font-[family-name:var(--font-display)] text-3xl text-charcoal text-center mb-8">
+            <h2 className="font-[family-name:var(--font-display)] text-3xl text-white text-center mb-8">
               The Team
             </h2>
             <div

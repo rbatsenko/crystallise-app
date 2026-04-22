@@ -5,7 +5,7 @@ export default function Footer({ transparent = false }: { transparent?: boolean 
   return (
     <footer
       className={`relative z-50 py-12 px-6 ${
-        transparent ? "bg-transparent" : "bg-white border-t border-stone/30"
+        transparent ? "bg-transparent" : "bg-transparent border-t border-white/10"
       }`}
     >
       <div className="max-w-4xl mx-auto flex flex-col items-center gap-6">
@@ -17,14 +17,14 @@ export default function Footer({ transparent = false }: { transparent?: boolean 
             height={40}
           />
         </Link>
-        <nav className="flex flex-wrap justify-center gap-6 text-sm text-slate font-[family-name:var(--font-body)]">
-          <Link href="/support" className="hover:text-charcoal transition-colors">Support an Idea</Link>
-          <Link href="/propose" className="hover:text-charcoal transition-colors">Pitch an Idea</Link>
-          <Link href="/about" className="hover:text-charcoal transition-colors">About Us</Link>
-          <Link href="/events" className="hover:text-charcoal transition-colors">Events</Link>
-          <Link href="/media" className="hover:text-charcoal transition-colors">Media</Link>
+        <nav className="flex flex-wrap justify-center gap-6 text-sm text-white/80 font-[family-name:var(--font-body)]">
+          <Link href="/support" className="hover:text-white transition-colors">Support an Idea</Link>
+          <Link href="/propose" className="hover:text-white transition-colors">Pitch an Idea</Link>
+          <Link href="/about" className="hover:text-white transition-colors">About Us</Link>
+          <Link href="/events" className="hover:text-white transition-colors">Events</Link>
+          <Link href="/media" className="hover:text-white transition-colors">Media</Link>
         </nav>
-        <p className="text-xs text-slate/60">
+        <p className="text-xs text-white/60">
           &copy; {new Date().getFullYear()} Crystallise. A non-profit organisation.
         </p>
       </div>

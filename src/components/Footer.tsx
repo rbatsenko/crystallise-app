@@ -5,7 +5,7 @@ export default function Footer({ transparent = false }: { transparent?: boolean 
   return (
     <footer
       className={`relative z-50 py-12 px-6 ${
-        transparent ? "bg-transparent" : "bg-transparent border-t border-white/10"
+        transparent ? "bg-transparent" : "bg-black/20 backdrop-blur-sm border-t border-white/10"
       }`}
     >
       <div className="max-w-4xl mx-auto flex flex-col items-center gap-6">

@@ -40,22 +40,19 @@ export default function ProposePage() {
         </div>
 
         <main className="flex-1 max-w-2xl mx-auto px-6 py-12">
-          <motion.h1
-            className="font-[family-name:var(--font-display)] text-4xl text-white text-center mb-4"
+          <motion.div
+            className="bg-black/20 backdrop-blur-sm rounded-2xl px-8 py-6 mb-12 max-w-md mx-auto"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            Pitch an Idea
-          </motion.h1>
-          <motion.p
-            className="font-[family-name:var(--font-body)] text-white/80 text-center mb-12 max-w-md mx-auto"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-          >
-            Have a creative climbing project in mind? We want to hear about it.
-          </motion.p>
+            <h1 className="font-[family-name:var(--font-display)] text-4xl text-white text-center mb-3">
+              Pitch an Idea
+            </h1>
+            <p className="font-[family-name:var(--font-body)] text-white/80 text-center">
+              Have a creative climbing project in mind? We want to hear about it.
+            </p>
+          </motion.div>
 
           <motion.form
             className="torn-paper bg-warm-gray px-8 py-10 space-y-6 isolate"

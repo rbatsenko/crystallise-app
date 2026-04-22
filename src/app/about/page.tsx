@@ -65,9 +65,9 @@ export default function AboutPage() {
         </div>
 
         <main className="flex-1 max-w-3xl mx-auto px-6 py-12">
-          {/* Header */}
+          {/* Header + Mission */}
           <motion.div
-            className="text-center mb-16"
+            className="bg-black/20 backdrop-blur-sm rounded-2xl px-8 py-8 mb-16 max-w-xl mx-auto text-center"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -77,22 +77,13 @@ export default function AboutPage() {
               alt="Crystallise"
               width={160}
               height={48}
-              className="mx-auto mb-8"
+              className="mx-auto mb-6"
             />
-            <p className="font-[family-name:var(--font-body)] text-lg text-white/80 max-w-xl mx-auto leading-relaxed">
+            <p className="font-[family-name:var(--font-body)] text-lg text-white/80 leading-relaxed mb-6">
               A non-profit organisation focused on developing the arts and
               culture within climbing media.
             </p>
-          </motion.div>
-
-          {/* Mission statement */}
-          <motion.div
-            className="mb-16 text-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-          >
-            <p className="font-[family-name:var(--font-body)] text-base text-white/80 leading-relaxed max-w-lg mx-auto">
+            <p className="font-[family-name:var(--font-body)] text-base text-white/70 leading-relaxed">
               We are at a key moment in the history of our sport — our lifestyle.
               Will we seek expression or attention? Inspiration or cash? Love or
               cynicism? Crystallise is a gentle nudge towards the former, and a
@@ -143,7 +134,7 @@ export default function AboutPage() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8, duration: 0.6 }}
           >
-            <h2 className="font-[family-name:var(--font-display)] text-3xl text-white text-center mb-8">
+            <h2 className="font-[family-name:var(--font-display)] text-3xl text-white text-center mb-8 bg-black/20 backdrop-blur-sm rounded-2xl px-6 py-3 max-w-xs mx-auto">
               The Team
             </h2>
             <div

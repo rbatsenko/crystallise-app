@@ -11,10 +11,11 @@ export default function Footer({ transparent = false }: { transparent?: boolean 
       <div className="max-w-4xl mx-auto flex flex-col items-center gap-6">
         <Link href="/" className="hover:opacity-80 transition-opacity">
           <Image
-            src="/images/crystallise-logo-no-text.png"
+            src="/images/logo-stone-face.png"
             alt="Crystallise — Back to Home"
             width={40}
             height={40}
+            className="brightness-125 drop-shadow-md"
           />
         </Link>
         <nav className="flex flex-wrap justify-center gap-6 text-sm text-white/80 font-[family-name:var(--font-body)]">

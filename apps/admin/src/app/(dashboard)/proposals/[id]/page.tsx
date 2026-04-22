@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@crystallise/supabase/server";
 import { StatusSelect } from "./status-select";
 import { NotesEditor } from "./notes-editor";
+import { ImageGallery } from "@/components/image-gallery";
 import { relativeTime } from "@/lib/time";
 
 const FIELDS: { key: Field; label: string }[] = [
@@ -102,24 +103,7 @@ export default async function ProposalPage({
                 <h2 className="text-[11px] uppercase tracking-wider text-[color:var(--color-text-subtle)] mb-3 font-medium">
                   Supporting images
                 </h2>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  {signedUrls.map(({ path, url }) => (
-                    <a
-                      key={path}
-                      href={url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="block aspect-square overflow-hidden rounded-lg border border-[color:var(--color-border)] hover:border-[color:var(--color-border-strong)] transition-colors"
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={url}
-                        alt=""
-                        className="w-full h-full object-cover"
-                      />
-                    </a>
-                  ))}
-                </div>
+                <ImageGallery images={signedUrls} />
               </section>
             )}
           </div>

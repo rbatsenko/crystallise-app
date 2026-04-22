@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion, useMotionValue } from "framer-motion";
 import { useRef, useCallback } from "react";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -19,8 +19,8 @@ const NAV_WIDTH_MOBILE = 200;
 const NAV_WIDTH_DESKTOP = 280;
 const NAV_ASPECT = 840 / 227;
 
-// Minimum drag distance (px) before we suppress the click/navigate
-const DRAG_THRESHOLD = 5;
+// Minimum drag distance (px) before we consider it a drag (not a tap)
+const DRAG_THRESHOLD = 8;
 
 function DraggableNavItem({
   item,
@@ -37,28 +37,28 @@ function DraggableNavItem({
   isMobile: boolean;
   constraintsRef: React.RefObject<HTMLElement | null>;
 }) {
+  const router = useRouter();
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const isDragging = useRef(false);
+  const hasDragged = useRef(false);
 
   const handleDragStart = useCallback(() => {
-    isDragging.current = false;
+    hasDragged.current = false;
   }, []);
 
   const handleDrag = useCallback(() => {
     if (Math.abs(x.get()) > DRAG_THRESHOLD || Math.abs(y.get()) > DRAG_THRESHOLD) {
-      isDragging.current = true;
+      hasDragged.current = true;
     }
   }, [x, y]);
 
-  const handleClick = useCallback(
-    (e: React.MouseEvent) => {
-      if (isDragging.current) {
-        e.preventDefault();
-      }
-    },
-    [],
-  );
+  // Works on both mouse click and mobile tap — framer-motion's onTap
+  // fires after pointerup only if there was no drag
+  const handleTap = useCallback(() => {
+    if (!hasDragged.current) {
+      router.push(item.href);
+    }
+  }, [router, item.href]);
 
   return (
     <motion.div
@@ -69,6 +69,7 @@ function DraggableNavItem({
       dragTransition={{ bounceStiffness: 300, bounceDamping: 30 }}
       onDragStart={handleDragStart}
       onDrag={handleDrag}
+      onTap={handleTap}
       style={{
         x,
         y,
@@ -87,16 +88,14 @@ function DraggableNavItem({
         transition: { duration: 0 },
       }}
     >
-      <Link href={item.href} className="block" onClick={handleClick} draggable={false}>
-        <Image
-          src={item.image}
-          alt={item.label}
-          width={navW}
-          height={navH}
-          className="select-none drop-shadow-lg pointer-events-none"
-          draggable={false}
-        />
-      </Link>
+      <Image
+        src={item.image}
+        alt={item.label}
+        width={navW}
+        height={navH}
+        className="select-none drop-shadow-lg pointer-events-none"
+        draggable={false}
+      />
     </motion.div>
   );
 }

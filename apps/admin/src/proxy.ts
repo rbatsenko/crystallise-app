@@ -4,7 +4,7 @@ import type { Database } from "@crystallise/supabase/types";
 
 const PUBLIC_PREFIXES = ["/login", "/auth"];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient<Database>(
@@ -28,22 +28,20 @@ export async function middleware(request: NextRequest) {
     },
   );
 
-  // Do not put code between createServerClient and getUser — it's easy to
-  // accidentally break session refresh.
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // Local JWT validation — no network round-trip, unlike getUser().
+  const { data: claimsData } = await supabase.auth.getClaims();
+  const userId = claimsData?.claims?.sub;
 
   const path = request.nextUrl.pathname;
   const isPublic = PUBLIC_PREFIXES.some((p) => path.startsWith(p));
 
-  if (!user && !isPublic) {
+  if (!userId && !isPublic) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
   }
 
-  if (user && !isPublic) {
+  if (userId && !isPublic) {
     const { data: allowed } = await supabase.rpc("is_admin");
     if (!allowed) {
       await supabase.auth.signOut();

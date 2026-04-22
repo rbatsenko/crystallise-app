@@ -19,7 +19,7 @@ export default function MediaPage() {
         <div className="px-6 pt-6">
           <Link
             href="/"
-            className="text-white/70 hover:text-white transition-colors font-[family-name:var(--font-body)] text-sm"
+            className="text-white/70 hover:text-white transition-colors font-[family-name:var(--font-body)] text-sm bg-black/20 backdrop-blur-sm rounded-full px-4 py-1.5 inline-block"
           >
             &larr; Back
           </Link>

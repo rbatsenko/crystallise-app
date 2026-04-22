@@ -63,7 +63,7 @@ export function ThemeToggle() {
       onClick={cycle}
       aria-label={`Switch theme (current: ${label})`}
       title={label}
-      className="fixed top-4 right-4 z-50 h-9 w-9 inline-flex items-center justify-center rounded-full border border-slate-200 bg-white/80 backdrop-blur text-slate-700 hover:bg-white dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-200 dark:hover:bg-slate-900 transition-colors"
+      className="inline-flex h-7 w-7 items-center justify-center rounded-md text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)] hover:bg-[color:var(--color-surface-raised)] transition-colors"
     >
       {mounted && theme === "system" && <SystemIcon />}
       {mounted && theme === "light" && <SunIcon />}

@@ -81,23 +81,30 @@ function LoginForm() {
   return (
     <main className="min-h-screen flex items-center justify-center px-6">
       <div className="w-full max-w-sm">
-        <h1 className="text-2xl font-semibold mb-1">Crystallise Admin</h1>
-        <p className="text-sm text-slate-500 mb-8">
+        <div className="mb-8 flex items-center gap-2">
+          <span className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-[color:var(--color-accent)] text-white text-xs font-bold">
+            C
+          </span>
+          <h1 className="text-xl font-semibold tracking-tight">
+            Crystallise Admin
+          </h1>
+        </div>
+        <p className="text-sm text-[color:var(--color-text-muted)] mb-8">
           Sign in with an email on the allowlist.
         </p>
 
         {notAdmin && (
-          <div className="mb-6 rounded-md border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800 dark:bg-red-950 dark:border-red-800 dark:text-red-200">
+          <div className="mb-6 rounded-md border border-red-300/60 bg-red-50 px-4 py-3 text-sm text-red-800 dark:bg-red-950/40 dark:border-red-900 dark:text-red-200">
             That account isn&apos;t in the admin allowlist.
           </div>
         )}
 
         {state === "magic_sent" ? (
-          <div className="rounded-md border border-green-300 bg-green-50 px-4 py-3 text-sm text-green-800 dark:bg-green-950 dark:border-green-800 dark:text-green-200">
+          <div className="rounded-md border border-emerald-300/60 bg-emerald-50 px-4 py-3 text-sm text-emerald-800 dark:bg-emerald-950/40 dark:border-emerald-900 dark:text-emerald-200">
             Check <strong>{email}</strong> for a sign-in link.
           </div>
         ) : (
-          <form onSubmit={onSubmit} className="space-y-4">
+          <form onSubmit={onSubmit} className="space-y-3">
             <input
               type="email"
               required
@@ -106,7 +113,7 @@ function LoginForm() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@crystallise.example"
-              className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-500 dark:bg-slate-900 dark:border-slate-700"
+              className="w-full rounded-md border border-[color:var(--color-border-strong)] bg-[color:var(--color-surface-raised)] px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[color:var(--color-accent)]/30"
             />
             {mode === "password" && (
               <input
@@ -116,13 +123,13 @@ function LoginForm() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-500 dark:bg-slate-900 dark:border-slate-700"
+                className="w-full rounded-md border border-[color:var(--color-border-strong)] bg-[color:var(--color-surface-raised)] px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[color:var(--color-accent)]/30"
               />
             )}
             <button
               type="submit"
               disabled={state === "submitting"}
-              className="w-full rounded-md bg-slate-900 text-white px-3 py-2 text-sm font-medium disabled:opacity-50 dark:bg-slate-100 dark:text-slate-900"
+              className="w-full rounded-md bg-[color:var(--color-text)] text-[color:var(--color-surface)] px-3 py-2 text-sm font-medium disabled:opacity-50 hover:opacity-90 transition-opacity"
             >
               {state === "submitting"
                 ? mode === "password"
@@ -144,7 +151,7 @@ function LoginForm() {
                   setMode(mode === "password" ? "magic" : "password");
                   setErrorMsg(null);
                 }}
-                className="text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 underline underline-offset-4"
+                className="text-xs text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)] underline underline-offset-4"
               >
                 {mode === "password"
                   ? "Or email me a sign-in link instead"

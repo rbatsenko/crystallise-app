@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import { updateStatus } from "./actions";
+import { statusLabel } from "@/components/status-chip";
 import type { Database } from "@crystallise/supabase/types";
 
 type Status = Database["public"]["Enums"]["proposal_status"];
@@ -27,11 +28,11 @@ export function StatusSelect({
           await updateStatus(id, next);
         });
       }}
-      className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm disabled:opacity-50 dark:bg-slate-900 dark:border-slate-700"
+      className="w-full rounded-md border border-[color:var(--color-border-strong)] bg-[color:var(--color-surface-muted)] px-3 py-1.5 text-sm disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-[color:var(--color-accent)]/30 transition-colors"
     >
       {OPTIONS.map((s) => (
         <option key={s} value={s}>
-          {s}
+          {statusLabel(s)}
         </option>
       ))}
     </select>

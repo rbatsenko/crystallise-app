@@ -6,22 +6,36 @@ import Image from "next/image";
 import Footer from "@/components/Footer";
 import PageTransition from "@/components/PageTransition";
 
-const events = [
+type EventItem = {
+  title: string;
+  date: string;
+  location: string;
+  schedule: { time: string; details: string }[];
+  extra?: string;
+  color: string;
+  accent: string;
+  bookingUrl?: string;
+  poster?: string;
+  mapsUrl?: string;
+  past?: boolean;
+};
+
+const events: EventItem[] = [
   {
     title: "Crystallise Launch",
-    date: "Saturday 21st March",
+    date: "Saturday 21st March 2026",
     location: "MURO — 845 Brayards Rd, London SE15 3RD",
     schedule: [
       { time: "2pm", details: "Film screenings — squ(h)amish II by Hamish McArthur, MOYO, and Spirit Quest by Quinn Mason" },
       { time: "3:30pm", details: "Crystallise Launch Q&A" },
       { time: "5–11pm", details: "Climbing, DJs, drinks, and food" },
     ],
-    extra: "Raffles, auctions, and giveaways from Arc'teryx and Tension Climbing.",
+    extra: "Thank you to everyone who came out to celebrate the launch with us.",
     color: "#1a1a1a",
     accent: "#c9a84c",
-    bookingUrl: "https://www.muroclimbing.com/page/crystallise",
     poster: "/images/crystallise-launch.jpeg",
     mapsUrl: "https://maps.google.com/?q=MURO+Climbing+845+Brayards+Rd+London+SE15+3RD",
+    past: true,
   },
 ];
 
@@ -59,7 +73,7 @@ export default function EventsPage() {
               <motion.div
                 key={event.title}
                 initial={{ opacity: 0, y: 40 }}
-                animate={{ y: 0 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{
                   duration: 0.6,
                   delay: 0.3 + i * 0.15,
@@ -94,13 +108,23 @@ export default function EventsPage() {
 
                   <div className="px-8 py-10 sm:px-10 sm:py-12">
                     {/* Date & Location */}
-                    <div className="flex justify-between items-start mb-6">
-                      <span
-                        className="font-[family-name:var(--font-body)] text-xs uppercase tracking-[0.25em]"
-                        style={{ color: event.accent }}
-                      >
-                        {event.date}
-                      </span>
+                    <div className="flex justify-between items-start mb-6 gap-4">
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <span
+                          className="font-[family-name:var(--font-body)] text-xs uppercase tracking-[0.25em]"
+                          style={{ color: event.accent }}
+                        >
+                          {event.date}
+                        </span>
+                        {event.past && (
+                          <span
+                            className="font-[family-name:var(--font-body)] text-[10px] uppercase tracking-[0.2em] px-2 py-0.5 border rounded-sm"
+                            style={{ color: `${event.accent}cc`, borderColor: `${event.accent}55` }}
+                          >
+                            Past Event
+                          </span>
+                        )}
+                      </div>
                       {event.mapsUrl ? (
                         <a
                           href={event.mapsUrl}
@@ -150,31 +174,32 @@ export default function EventsPage() {
 
                     {/* Actions */}
                     <div className="flex flex-wrap gap-4 items-center">
-                      {event.bookingUrl ? (
-                        <a
-                          href={event.bookingUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-block px-6 py-2.5 border text-sm font-[family-name:var(--font-display)] tracking-wide transition-colors hover:bg-white/10"
-                          style={{
-                            borderColor: event.accent,
-                            color: event.accent,
-                          }}
-                        >
-                          Book Now &rarr;
-                        </a>
-                      ) : (
-                        <button
-                          className="px-6 py-2.5 border text-sm font-[family-name:var(--font-display)] tracking-wide cursor-not-allowed opacity-60"
-                          style={{
-                            borderColor: event.accent,
-                            color: event.accent,
-                          }}
-                          disabled
-                        >
-                          Book Now
-                        </button>
-                      )}
+                      {!event.past &&
+                        (event.bookingUrl ? (
+                          <a
+                            href={event.bookingUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-block px-6 py-2.5 border text-sm font-[family-name:var(--font-display)] tracking-wide transition-colors hover:bg-white/10"
+                            style={{
+                              borderColor: event.accent,
+                              color: event.accent,
+                            }}
+                          >
+                            Book Now &rarr;
+                          </a>
+                        ) : (
+                          <button
+                            className="px-6 py-2.5 border text-sm font-[family-name:var(--font-display)] tracking-wide cursor-not-allowed opacity-60"
+                            style={{
+                              borderColor: event.accent,
+                              color: event.accent,
+                            }}
+                            disabled
+                          >
+                            Book Now
+                          </button>
+                        ))}
 
                       {event.poster && (
                         <>

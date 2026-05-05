@@ -104,6 +104,77 @@ function DraggableNavItem({
   );
 }
 
+function DraggableLogo({
+  isMobile,
+  constraintsRef,
+  delay,
+}: {
+  isMobile: boolean;
+  constraintsRef: React.RefObject<HTMLElement | null>;
+  delay: number;
+}) {
+  const router = useRouter();
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const pointerStart = useRef<{ x: number; y: number } | null>(null);
+  const size = isMobile ? 48 : 64;
+
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    pointerStart.current = { x: e.clientX, y: e.clientY };
+  }, []);
+
+  const handlePointerUp = useCallback(
+    (e: React.PointerEvent) => {
+      if (!pointerStart.current) return;
+      const dx = Math.abs(e.clientX - pointerStart.current.x);
+      const dy = Math.abs(e.clientY - pointerStart.current.y);
+      pointerStart.current = null;
+      if (dx < DRAG_THRESHOLD && dy < DRAG_THRESHOLD) {
+        router.push("/");
+      }
+    },
+    [router],
+  );
+
+  return (
+    <motion.div
+      className="mt-2 md:mt-4"
+      drag
+      dragConstraints={constraintsRef}
+      dragElastic={0.08}
+      dragMomentum={false}
+      dragTransition={{ bounceStiffness: 300, bounceDamping: 30 }}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+      style={{ x, y, cursor: "grab", touchAction: "none" }}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, delay }}
+      whileHover={{ scale: 1.08, transition: { duration: 0.3 } }}
+      whileDrag={{ scale: 1.1, cursor: "grabbing", transition: { duration: 0 } }}
+    >
+      <Link
+        href="/"
+        aria-label="Crystallise home"
+        className="block"
+        draggable={false}
+        tabIndex={-1}
+        onClick={(e) => e.preventDefault()}
+      >
+        <Image
+          src="/images/logo-stone-face.png"
+          alt="Crystallise"
+          width={size}
+          height={size}
+          className="select-none drop-shadow-lg pointer-events-none"
+          draggable={false}
+          priority
+        />
+      </Link>
+    </motion.div>
+  );
+}
+
 export default function Home() {
   const isMobile = useIsMobile();
   const sectionRef = useRef<HTMLElement>(null);
@@ -129,23 +200,11 @@ export default function Home() {
           />
         ))}
 
-        <motion.div
-          className="mt-2 md:mt-4"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 + navItems.length * 0.12 }}
-        >
-          <Link href="/" aria-label="Crystallise home">
-            <Image
-              src="/images/logo-stone-face.png"
-              alt="Crystallise"
-              width={isMobile ? 48 : 64}
-              height={isMobile ? 48 : 64}
-              className="select-none"
-              priority
-            />
-          </Link>
-        </motion.div>
+        <DraggableLogo
+          isMobile={isMobile}
+          constraintsRef={sectionRef}
+          delay={0.5 + navItems.length * 0.12}
+        />
       </div>
     </section>
   );

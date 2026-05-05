@@ -2,9 +2,41 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useState } from "react";
 import Footer from "@/components/Footer";
 import TornPaper from "@/components/TornPaper";
 import PageTransition from "@/components/PageTransition";
+
+function CopyField({ label, value }: { label: string; value: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // Clipboard API unavailable; ignore
+    }
+  };
+
+  return (
+    <div className="flex flex-col sm:flex-row sm:gap-3 sm:items-center">
+      <dt className="text-slate/70 sm:w-36 shrink-0">{label}</dt>
+      <dd className="flex items-center gap-2 min-w-0 flex-1">
+        <span className="text-charcoal font-medium tracking-wide break-all">{value}</span>
+        <button
+          type="button"
+          onClick={handleCopy}
+          aria-label={`Copy ${label}`}
+          className="shrink-0 text-xs text-slate/70 hover:text-charcoal transition-colors px-2 py-0.5 rounded border border-slate/20 hover:border-slate/40 bg-white/30 hover:bg-white/50"
+        >
+          {copied ? "Copied" : "Copy"}
+        </button>
+      </dd>
+    </div>
+  );
+}
 
 export default function SupportPage() {
   return (
@@ -73,15 +105,16 @@ export default function SupportPage() {
                 Make a Donation
               </h2>
               <p className="font-[family-name:var(--font-body)] text-sm text-slate leading-relaxed mb-4">
-                One-off donations will be available here soon via Stripe. In the
-                meantime, reach out to us directly if you&apos;d like to support
-                a project.
+                You can support us directly by bank transfer using the details
+                below. Card donations via Stripe will be available here soon.
               </p>
-              <div className="inline-block torn-paper bg-charcoal px-6 py-3 opacity-50 cursor-not-allowed">
-                <span className="font-[family-name:var(--font-display)] text-cream text-sm tracking-wide">
-                  Donate — Coming Soon
-                </span>
-              </div>
+              <dl className="font-[family-name:var(--font-body)] text-sm space-y-2.5">
+                <CopyField label="Account name" value="CRYSTALLISE MEDIA CIC" />
+                <CopyField label="Sort code" value="08-92-99" />
+                <CopyField label="Account number" value="67509557-00" />
+                <CopyField label="IBAN" value="GB88CPBK08929967509557" />
+                <CopyField label="BIC" value="CPBKGB22" />
+              </dl>
             </TornPaper>
           </motion.div>
 

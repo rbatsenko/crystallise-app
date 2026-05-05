@@ -78,9 +78,9 @@ function DraggableNavItem({
         cursor: "grab",
         touchAction: "none",
       }}
-      initial={{ opacity: 0, y: 40, rotateX: 15, rotateZ: item.rotation * 3 }}
+      initial={{ opacity: 0, y: 20, rotateX: 8, rotateZ: item.rotation * 1.5 }}
       animate={{ opacity: 1, y: 0, rotateZ: item.rotation }}
-      transition={{ duration: 0.7, delay: 0.5 + index * 0.12, ease: [0.25, 0.46, 0.45, 0.94] }}
+      transition={{ duration: 0.6, delay: 0.3 + index * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
       whileHover={{ rotateZ: 0, scale: 1.08, transition: { duration: 0.3 } }}
       whileDrag={{
         scale: 1.1,
@@ -185,7 +185,7 @@ export default function Home() {
     <section ref={sectionRef} className="relative h-dvh min-h-screen overflow-hidden">
       {/* Nav — centered, draggable */}
       <div
-        className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-1 md:gap-2"
+        className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 md:gap-4"
         style={{ perspective: "600px" }}
       >
         {navItems.map((item, i) => (
@@ -203,7 +203,7 @@ export default function Home() {
         <DraggableLogo
           isMobile={isMobile}
           constraintsRef={sectionRef}
-          delay={0.5 + navItems.length * 0.12}
+          delay={0.3 + navItems.length * 0.1}
         />
       </div>
     </section>

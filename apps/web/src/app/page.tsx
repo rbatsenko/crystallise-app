@@ -135,14 +135,16 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5 + navItems.length * 0.12 }}
         >
-          <Image
-            src="/images/logo-stone-face.png"
-            alt="Crystallise"
-            width={isMobile ? 48 : 64}
-            height={isMobile ? 48 : 64}
-            className="select-none"
-            priority
-          />
+          <Link href="/" aria-label="Crystallise home">
+            <Image
+              src="/images/logo-stone-face.png"
+              alt="Crystallise"
+              width={isMobile ? 48 : 64}
+              height={isMobile ? 48 : 64}
+              className="select-none"
+              priority
+            />
+          </Link>
         </motion.div>
       </div>
     </section>

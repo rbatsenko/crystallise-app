@@ -138,7 +138,7 @@ function DraggableLogo({
 
   return (
     <motion.div
-      className="mt-2 md:mt-4"
+      className="mt-6 md:mt-10"
       drag
       dragConstraints={constraintsRef}
       dragElastic={0.08}

@@ -135,15 +135,15 @@ export default function SupportPage() {
                 help us plan ahead and commit to bigger, more ambitious
                 projects.
               </p>
-              <a
-                href="https://www.patreon.com/crystallise"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block torn-paper bg-charcoal px-6 py-3 font-[family-name:var(--font-display)] text-cream text-sm tracking-wide hover:bg-charcoal/80 transition-colors"
+              <div
+                className="inline-block torn-paper bg-charcoal px-6 py-3 opacity-50 cursor-not-allowed"
                 style={{ transform: "rotate(0.5deg)" }}
+                aria-disabled="true"
               >
-                Join on Patreon &rarr;
-              </a>
+                <span className="font-[family-name:var(--font-display)] text-cream text-sm tracking-wide">
+                  Patreon — Coming Soon
+                </span>
+              </div>
             </TornPaper>
           </motion.div>
 

@@ -6,6 +6,7 @@ import { useState } from "react";
 import Footer from "@/components/Footer";
 import TornPaper from "@/components/TornPaper";
 import PageTransition from "@/components/PageTransition";
+import DonorboxWidget from "@/components/DonorboxWidget";
 
 function CopyField({ label, value }: { label: string; value: string }) {
   const [copied, setCopied] = useState(false);
@@ -105,9 +106,15 @@ export default function SupportPage() {
                 Make a Donation
               </h2>
               <p className="font-[family-name:var(--font-body)] text-sm text-slate leading-relaxed mb-4">
-                You can support us directly by bank transfer using the details
-                below. Card donations via Stripe will be available here soon.
+                Make a card donation securely below, or support us directly by
+                bank transfer using the details that follow.
               </p>
+              <div className="mb-6">
+                <DonorboxWidget campaign="support-a-project-935696" />
+              </div>
+              <h3 className="font-[family-name:var(--font-display)] text-lg text-charcoal mb-2">
+                Bank transfer
+              </h3>
               <dl className="font-[family-name:var(--font-body)] text-sm space-y-2.5">
                 <CopyField label="Account name" value="CRYSTALLISE MEDIA CIC" />
                 <CopyField label="Sort code" value="08-92-99" />

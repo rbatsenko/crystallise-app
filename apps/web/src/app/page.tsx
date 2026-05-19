@@ -79,7 +79,7 @@ function DraggableNavItem({
         touchAction: "none",
       }}
       initial={{ opacity: 0, y: 20, rotateX: 8, rotateZ: item.rotation * 1.5 }}
-      animate={{ opacity: 1, y: 0, rotateZ: item.rotation }}
+      animate={{ opacity: 1, y: 0, rotateX: 0, rotateZ: item.rotation }}
       transition={{ duration: 0.6, delay: 0.3 + index * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
       whileHover={{ rotateZ: 0, scale: 1.08, transition: { duration: 0.3 } }}
       whileDrag={{
@@ -138,7 +138,6 @@ function DraggableLogo({
 
   return (
     <motion.div
-      className="mt-6 md:mt-10"
       drag
       dragConstraints={constraintsRef}
       dragElastic={0.08}

@@ -93,7 +93,7 @@ export default function SupportPage() {
             </TornPaper>
           </motion.div>
 
-          {/* Donate */}
+          {/* Donate by card */}
           <motion.div
             className="mt-8"
             initial={{ opacity: 0, y: 30, rotateX: 5 }}
@@ -103,18 +103,32 @@ export default function SupportPage() {
           >
             <TornPaper color="#c9a84c" rotation={1}>
               <h2 className="font-[family-name:var(--font-display)] text-2xl text-charcoal mb-3">
-                Make a Donation
+                Donate by Card
               </h2>
               <p className="font-[family-name:var(--font-body)] text-sm text-slate leading-relaxed mb-4">
-                Make a card donation securely below, or support us directly by
-                bank transfer using the details that follow.
+                Make a secure card donation through Donorbox. Choose a one-off
+                amount or set up a monthly gift.
               </p>
-              <div className="mb-6">
-                <DonorboxWidget campaign="support-a-project-935696" />
-              </div>
-              <h3 className="font-[family-name:var(--font-display)] text-lg text-charcoal mb-2">
-                Bank transfer
-              </h3>
+              <DonorboxWidget campaign="support-a-project-935696" />
+            </TornPaper>
+          </motion.div>
+
+          {/* Bank transfer */}
+          <motion.div
+            className="mt-8"
+            initial={{ opacity: 0, y: 30, rotateX: 5 }}
+            animate={{ opacity: 1, y: 0, rotateX: 0 }}
+            transition={{ delay: 0.6, duration: 0.6 }}
+            style={{ perspective: "800px", transformStyle: "preserve-3d" }}
+          >
+            <TornPaper color="#d4cdc4" rotation={-0.8}>
+              <h2 className="font-[family-name:var(--font-display)] text-2xl text-charcoal mb-3">
+                By Bank Transfer
+              </h2>
+              <p className="font-[family-name:var(--font-body)] text-sm text-slate leading-relaxed mb-4">
+                Prefer a direct transfer? You can support us using the bank
+                details below.
+              </p>
               <dl className="font-[family-name:var(--font-body)] text-sm space-y-2.5">
                 <CopyField label="Account name" value="CRYSTALLISE MEDIA CIC" />
                 <CopyField label="Sort code" value="08-92-99" />
@@ -130,7 +144,7 @@ export default function SupportPage() {
             className="mt-8"
             initial={{ opacity: 0, y: 30, rotateX: 5 }}
             animate={{ opacity: 1, y: 0, rotateX: 0 }}
-            transition={{ delay: 0.6, duration: 0.6 }}
+            transition={{ delay: 0.75, duration: 0.6 }}
             style={{ perspective: "800px", transformStyle: "preserve-3d" }}
           >
             <TornPaper color="#b8a88a" rotation={-0.8}>
@@ -159,7 +173,7 @@ export default function SupportPage() {
             className="mt-8"
             initial={{ opacity: 0, y: 30, rotateX: 5 }}
             animate={{ opacity: 1, y: 0, rotateX: 0 }}
-            transition={{ delay: 0.75, duration: 0.6 }}
+            transition={{ delay: 0.9, duration: 0.6 }}
             style={{ perspective: "800px", transformStyle: "preserve-3d" }}
           >
             <TornPaper color="#d4cdc4" rotation={0.5}>

@@ -30,13 +30,11 @@ function DraggableNavItem({
   index,
   navW,
   isMobile,
-  constraintsRef,
 }: {
   item: (typeof navItems)[number];
   index: number;
   navW: number;
   isMobile: boolean;
-  constraintsRef: React.RefObject<HTMLElement | null>;
 }) {
   const navH = Math.round((navW * item.srcHeight) / NAV_SOURCE_WIDTH);
   const router = useRouter();
@@ -63,7 +61,6 @@ function DraggableNavItem({
   return (
     <motion.div
       drag
-      dragConstraints={constraintsRef}
       dragElastic={0}
       dragMomentum={false}
       dragTransition={{ bounceStiffness: 300, bounceDamping: 30 }}
@@ -102,11 +99,9 @@ function DraggableNavItem({
 
 function DraggableLogo({
   isMobile,
-  constraintsRef,
   delay,
 }: {
   isMobile: boolean;
-  constraintsRef: React.RefObject<HTMLElement | null>;
   delay: number;
 }) {
   const router = useRouter();
@@ -133,7 +128,6 @@ function DraggableLogo({
   return (
     <motion.div
       drag
-      dragConstraints={constraintsRef}
       dragElastic={0}
       dragMomentum={false}
       dragTransition={{ bounceStiffness: 300, bounceDamping: 30 }}
@@ -170,11 +164,10 @@ function DraggableLogo({
 
 export default function Home() {
   const isMobile = useIsMobile();
-  const sectionRef = useRef<HTMLElement>(null);
   const navW = isMobile ? NAV_WIDTH_MOBILE : NAV_WIDTH_DESKTOP;
 
   return (
-    <section ref={sectionRef} className="relative h-dvh min-h-screen overflow-hidden">
+    <section className="relative h-dvh min-h-screen overflow-hidden">
       {/* Nav — centered, draggable */}
       <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 md:gap-4">
         {navItems.map((item, i) => (
@@ -184,13 +177,11 @@ export default function Home() {
             index={i}
             navW={navW}
             isMobile={isMobile}
-            constraintsRef={sectionRef}
           />
         ))}
 
         <DraggableLogo
           isMobile={isMobile}
-          constraintsRef={sectionRef}
           delay={0.3 + navItems.length * 0.1}
         />
       </div>

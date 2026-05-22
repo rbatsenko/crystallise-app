@@ -63,7 +63,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "additional_too_long" }, { status: 400 });
   }
 
-  const files = form.getAll("images").filter((v): v is File => v instanceof File);
+  const files = form
+    .getAll("images")
+    .filter((v): v is File => v instanceof File && v.size > 0);
   if (files.length > MAX_FILES) {
     return NextResponse.json({ error: "too_many_files" }, { status: 400 });
   }

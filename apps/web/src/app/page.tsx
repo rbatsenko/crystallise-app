@@ -7,21 +7,19 @@ import { motion, useMotionValue } from "framer-motion";
 import { useRef, useCallback } from "react";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
-// Nav images are 840×227 source PNGs with torn-paper content surrounded by
-// transparent space. topPad/botPad are the transparent rows above/below the
-// visible content in source pixels — we trim them with scaled negative margins
-// so the flex gap distributes evenly between visible edges, not bounding boxes.
+// Nav PNGs are 840px wide; srcHeight is each PNG's source height after
+// trimming transparent rows above/below the torn-paper artwork. Flex gap is
+// applied between visible edges directly — no margin compensation needed.
 const navItems = [
-  { label: "Support an Idea", href: "/support", image: "/images/nav/support-an-idea.png", rotation: -2, offsetX: -15, topPad: 0, botPad: 0 },
-  { label: "Pitch an Idea", href: "/propose", image: "/images/nav/pitch-an-idea.png", rotation: 1.5, offsetX: 20, topPad: 13, botPad: 26 },
-  { label: "About Us", href: "/about", image: "/images/nav/about-us.png", rotation: -1, offsetX: -8, topPad: 12, botPad: 0 },
-  { label: "Events", href: "/events", image: "/images/nav/events.png", rotation: 2.5, offsetX: 10, topPad: 19, botPad: 26 },
-  { label: "Media", href: "/media", image: "/images/nav/media.png", rotation: -1.5, offsetX: -18, topPad: 25, botPad: 24 },
+  { label: "Support an Idea", href: "/support", image: "/images/nav/support-an-idea.png", rotation: -2, offsetX: -15, srcHeight: 226 },
+  { label: "Pitch an Idea", href: "/propose", image: "/images/nav/pitch-an-idea.png", rotation: 1.5, offsetX: 20, srcHeight: 188 },
+  { label: "About Us", href: "/about", image: "/images/nav/about-us.png", rotation: -1, offsetX: -8, srcHeight: 215 },
+  { label: "Events", href: "/events", image: "/images/nav/events.png", rotation: 2.5, offsetX: 10, srcHeight: 182 },
+  { label: "Media", href: "/media", image: "/images/nav/media.png", rotation: -1.5, offsetX: -18, srcHeight: 178 },
 ];
 
 const NAV_WIDTH_MOBILE = 200;
 const NAV_WIDTH_DESKTOP = 280;
-const NAV_ASPECT = 840 / 227;
 const NAV_SOURCE_WIDTH = 840;
 
 // Minimum drag distance (px) before we consider it a drag (not a tap)
@@ -31,17 +29,16 @@ function DraggableNavItem({
   item,
   index,
   navW,
-  navH,
   isMobile,
   constraintsRef,
 }: {
   item: (typeof navItems)[number];
   index: number;
   navW: number;
-  navH: number;
   isMobile: boolean;
   constraintsRef: React.RefObject<HTMLElement | null>;
 }) {
+  const navH = Math.round((navW * item.srcHeight) / NAV_SOURCE_WIDTH);
   const router = useRouter();
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -79,8 +76,6 @@ function DraggableNavItem({
         y,
         transformStyle: "preserve-3d",
         marginLeft: `${isMobile ? item.offsetX * 0.5 : item.offsetX}px`,
-        marginTop: `${-item.topPad * (navW / NAV_SOURCE_WIDTH)}px`,
-        marginBottom: `${-item.botPad * (navW / NAV_SOURCE_WIDTH)}px`,
         cursor: "grab",
         touchAction: "none",
       }}
@@ -184,7 +179,6 @@ export default function Home() {
   const isMobile = useIsMobile();
   const sectionRef = useRef<HTMLElement>(null);
   const navW = isMobile ? NAV_WIDTH_MOBILE : NAV_WIDTH_DESKTOP;
-  const navH = Math.round(navW / NAV_ASPECT);
 
   return (
     <section ref={sectionRef} className="relative h-dvh min-h-screen overflow-hidden">
@@ -199,7 +193,6 @@ export default function Home() {
             item={item}
             index={i}
             navW={navW}
-            navH={navH}
             isMobile={isMobile}
             constraintsRef={sectionRef}
           />

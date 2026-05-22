@@ -1,4 +1,4 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { after, NextResponse, type NextRequest } from "next/server";
 import { createAdminClient } from "@crystallise/supabase/admin";
 
 const MAX_FILES = 5;
@@ -115,18 +115,26 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "insert_failed" }, { status: 500 });
   }
 
-  // Fire-and-forget Slack notification.
-  notifySlack({
-    id: proposalId,
-    name,
-    email,
-    overview,
-    deliverables,
-    budget,
-    budget_breakdown,
-    additional,
-    imageCount: imagePaths.length,
-  }).catch((err) => console.error("[propose] slack notify failed", err));
+  // Post the Slack notification after the response is sent. `after()` keeps
+  // the serverless function alive until the callback resolves; without it the
+  // function froze on Vercel mid-write to hooks.slack.com (ETIMEDOUT).
+  after(async () => {
+    try {
+      await notifySlack({
+        id: proposalId,
+        name,
+        email,
+        overview,
+        deliverables,
+        budget,
+        budget_breakdown,
+        additional,
+        imageCount: imagePaths.length,
+      });
+    } catch (err) {
+      console.error("[propose] slack notify failed", err);
+    }
+  });
 
   return NextResponse.json({ id: proposalId }, { status: 201 });
 }

@@ -272,8 +272,6 @@ export default function ProposePage() {
               />
             </div>
 
-            {/* Honeypot — real users leave this empty; bots that autofill every
-                field trip it and the server silently drops their submission. */}
             <input
               type="text"
               name="website"

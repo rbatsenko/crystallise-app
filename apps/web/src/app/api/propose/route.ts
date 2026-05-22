@@ -24,6 +24,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "invalid_form" }, { status: 400 });
   }
 
+  // Honeypot: real users never see this field. If it's filled, silently
+  // pretend the submission went through so the bot moves on.
+  if (str(form.get("website"))) {
+    return NextResponse.json({ id: crypto.randomUUID() }, { status: 201 });
+  }
+
   const name = str(form.get("name"));
   const email = str(form.get("email"));
   const overview = str(form.get("overview"));

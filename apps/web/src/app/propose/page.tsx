@@ -272,6 +272,17 @@ export default function ProposePage() {
               />
             </div>
 
+            {/* Honeypot — real users leave this empty; bots that autofill every
+                field trip it and the server silently drops their submission. */}
+            <input
+              type="text"
+              name="website"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              style={{ position: "absolute", left: "-9999px", width: "1px", height: "1px", opacity: 0 }}
+            />
+
             <div className="space-y-3">
               <button
                 type="submit"

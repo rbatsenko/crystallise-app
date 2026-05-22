@@ -7,18 +7,22 @@ import { motion, useMotionValue } from "framer-motion";
 import { useRef, useCallback } from "react";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
+// Nav images are 840×227 source PNGs with torn-paper content surrounded by
+// transparent space. topPad/botPad are the transparent rows above/below the
+// visible content in source pixels — we trim them with scaled negative margins
+// so the flex gap distributes evenly between visible edges, not bounding boxes.
 const navItems = [
-  { label: "Support an Idea", href: "/support", image: "/images/nav/support-an-idea.png", rotation: -2, offsetX: -15 },
-  { label: "Pitch an Idea", href: "/propose", image: "/images/nav/pitch-an-idea.png", rotation: 1.5, offsetX: 20 },
-  { label: "About Us", href: "/about", image: "/images/nav/about-us.png", rotation: -1, offsetX: -8 },
-  { label: "Events", href: "/events", image: "/images/nav/events.png", rotation: 2.5, offsetX: 10 },
-  { label: "Media", href: "/media", image: "/images/nav/media.png", rotation: -1.5, offsetX: -18 },
+  { label: "Support an Idea", href: "/support", image: "/images/nav/support-an-idea.png", rotation: -2, offsetX: -15, topPad: 0, botPad: 0 },
+  { label: "Pitch an Idea", href: "/propose", image: "/images/nav/pitch-an-idea.png", rotation: 1.5, offsetX: 20, topPad: 13, botPad: 26 },
+  { label: "About Us", href: "/about", image: "/images/nav/about-us.png", rotation: -1, offsetX: -8, topPad: 12, botPad: 0 },
+  { label: "Events", href: "/events", image: "/images/nav/events.png", rotation: 2.5, offsetX: 10, topPad: 19, botPad: 26 },
+  { label: "Media", href: "/media", image: "/images/nav/media.png", rotation: -1.5, offsetX: -18, topPad: 25, botPad: 24 },
 ];
 
-// Nav images are 840×227 — rendered smaller on-screen
 const NAV_WIDTH_MOBILE = 200;
 const NAV_WIDTH_DESKTOP = 280;
 const NAV_ASPECT = 840 / 227;
+const NAV_SOURCE_WIDTH = 840;
 
 // Minimum drag distance (px) before we consider it a drag (not a tap)
 const DRAG_THRESHOLD = 8;
@@ -75,6 +79,8 @@ function DraggableNavItem({
         y,
         transformStyle: "preserve-3d",
         marginLeft: `${isMobile ? item.offsetX * 0.5 : item.offsetX}px`,
+        marginTop: `${-item.topPad * (navW / NAV_SOURCE_WIDTH)}px`,
+        marginBottom: `${-item.botPad * (navW / NAV_SOURCE_WIDTH)}px`,
         cursor: "grab",
         touchAction: "none",
       }}

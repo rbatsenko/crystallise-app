@@ -64,7 +64,7 @@ function DraggableNavItem({
     <motion.div
       drag
       dragConstraints={constraintsRef}
-      dragElastic={0.08}
+      dragElastic={0}
       dragMomentum={false}
       dragTransition={{ bounceStiffness: 300, bounceDamping: 30 }}
       onPointerDown={handlePointerDown}
@@ -134,7 +134,7 @@ function DraggableLogo({
     <motion.div
       drag
       dragConstraints={constraintsRef}
-      dragElastic={0.08}
+      dragElastic={0}
       dragMomentum={false}
       dragTransition={{ bounceStiffness: 300, bounceDamping: 30 }}
       onPointerDown={handlePointerDown}
@@ -176,10 +176,7 @@ export default function Home() {
   return (
     <section ref={sectionRef} className="relative h-dvh min-h-screen overflow-hidden">
       {/* Nav — centered, draggable */}
-      <div
-        className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 md:gap-4"
-        style={{ perspective: "600px" }}
-      >
+      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 md:gap-4">
         {navItems.map((item, i) => (
           <DraggableNavItem
             key={item.href}

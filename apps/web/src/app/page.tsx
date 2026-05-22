@@ -70,18 +70,17 @@ function DraggableNavItem({
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
       style={{
-        transformStyle: "preserve-3d",
         marginLeft: `${isMobile ? item.offsetX * 0.5 : item.offsetX}px`,
         cursor: "grab",
         touchAction: "none",
       }}
-      initial={{ opacity: 0, y: 20, rotateX: 8, rotateZ: item.rotation * 1.5 }}
-      animate={{ opacity: 1, y: 0, rotateX: 0, rotateZ: item.rotation }}
-      transition={{ duration: 0.6, delay: 0.3 + index * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
-      whileHover={{ rotateZ: 0, scale: 1.08, transition: { duration: 0.3 } }}
+      initial={{ opacity: 0, rotate: item.rotation * 1.5 }}
+      animate={{ opacity: 1, rotate: item.rotation }}
+      transition={{ duration: 0.5, delay: 0.2 + index * 0.08, ease: [0.25, 0.46, 0.45, 0.94] }}
+      whileHover={{ rotate: 0, scale: 1.08, transition: { duration: 0.3 } }}
       whileDrag={{
         scale: 1.1,
-        rotateZ: 0,
+        rotate: 0,
         cursor: "grabbing",
         transition: { duration: 0 },
       }}
@@ -141,9 +140,9 @@ function DraggableLogo({
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
       style={{ cursor: "grab", touchAction: "none" }}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6, delay }}
       whileHover={{ scale: 1.08, transition: { duration: 0.3 } }}
       whileDrag={{ scale: 1.1, cursor: "grabbing", transition: { duration: 0 } }}
     >

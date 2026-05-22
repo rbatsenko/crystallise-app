@@ -14,6 +14,7 @@ const CHAR_LIMITS = {
 } as const;
 
 const BUCKET = "proposal-images";
+const ADMIN_URL = "https://crystallise-admin.vercel.app";
 
 export async function POST(request: NextRequest) {
   let form: FormData;
@@ -172,95 +173,76 @@ async function notifySlack(proposal: {
   const url = process.env.SLACK_WEBHOOK_URL;
   if (!url) return;
 
-  const adminUrl = process.env.ADMIN_URL;
-
   type Block =
     | { type: "header"; text: { type: "plain_text"; text: string } }
     | { type: "divider" }
-    | {
-        type: "section";
-        text?: { type: "mrkdwn"; text: string };
-        fields?: { type: "mrkdwn"; text: string }[];
-      }
-    | {
-        type: "context";
-        elements: { type: "mrkdwn"; text: string }[];
-      };
+    | { type: "section"; text: { type: "mrkdwn"; text: string } }
+    | { type: "context"; elements: { type: "mrkdwn"; text: string }[] };
 
   const blocks: Block[] = [
+    { type: "divider" },
     {
       type: "header",
       text: { type: "plain_text", text: "✨ New proposal" },
     },
     {
       type: "section",
-      fields: [
-        { type: "mrkdwn", text: `*From*\n${proposal.name}` },
-        { type: "mrkdwn", text: `*Email*\n<mailto:${proposal.email}|${proposal.email}>` },
-      ],
+      text: { type: "mrkdwn", text: `*From*\n${proposal.name}` },
     },
-    { type: "divider" },
     {
       type: "section",
       text: {
         type: "mrkdwn",
-        text: `*Overview*\n${truncate(proposal.overview, 600)}`,
+        text: `*Email*\n<mailto:${proposal.email}|${proposal.email}>`,
       },
+    },
+    { type: "divider" },
+    {
+      type: "section",
+      text: { type: "mrkdwn", text: `*Overview*\n${proposal.overview}` },
     },
   ];
 
   if (proposal.deliverables) {
     blocks.push({
       type: "section",
-      text: {
-        type: "mrkdwn",
-        text: `*Deliverables*\n${truncate(proposal.deliverables, 400)}`,
-      },
+      text: { type: "mrkdwn", text: `*Deliverables*\n${proposal.deliverables}` },
     });
   }
 
-  if (proposal.budget || proposal.budget_breakdown) {
-    const budgetFields: { type: "mrkdwn"; text: string }[] = [];
-    if (proposal.budget) {
-      budgetFields.push({
+  if (proposal.budget) {
+    blocks.push({
+      type: "section",
+      text: { type: "mrkdwn", text: `*Budget*\n${proposal.budget}` },
+    });
+  }
+
+  if (proposal.budget_breakdown) {
+    blocks.push({
+      type: "section",
+      text: {
         type: "mrkdwn",
-        text: `*Budget*\n${truncate(proposal.budget, 200)}`,
-      });
-    }
-    if (proposal.budget_breakdown) {
-      budgetFields.push({
-        type: "mrkdwn",
-        text: `*Breakdown*\n${truncate(proposal.budget_breakdown, 400)}`,
-      });
-    }
-    blocks.push({ type: "section", fields: budgetFields });
+        text: `*Breakdown*\n${proposal.budget_breakdown}`,
+      },
+    });
   }
 
   if (proposal.additional) {
     blocks.push({
       type: "section",
-      text: {
-        type: "mrkdwn",
-        text: `*Additional*\n${truncate(proposal.additional, 400)}`,
-      },
+      text: { type: "mrkdwn", text: `*Additional*\n${proposal.additional}` },
     });
   }
 
-  const contextParts: string[] = [];
-  contextParts.push(
+  const imageLabel =
     proposal.imageCount > 0
       ? `🖼️ ${proposal.imageCount} image${proposal.imageCount === 1 ? "" : "s"}`
-      : "No images",
-  );
-  if (adminUrl) {
-    contextParts.push(`<${adminUrl}/proposals/${proposal.id}|Open in admin ↗>`);
-  } else {
-    contextParts.push(`ID: \`${proposal.id.slice(0, 8)}\``);
-  }
+      : "No images";
+  const adminLink = `<${ADMIN_URL}/proposals/${proposal.id}|Open in admin ↗>`;
   blocks.push({ type: "divider" });
   blocks.push({
     type: "context",
-    elements: [{ type: "mrkdwn", text: contextParts.join(" · ") }],
+    elements: [{ type: "mrkdwn", text: `${imageLabel} · ${adminLink}` }],
   });
 
   const res = await fetch(url, {
@@ -274,9 +256,4 @@ async function notifySlack(proposal: {
   if (!res.ok) {
     throw new Error(`Slack webhook ${res.status}: ${await res.text()}`);
   }
-}
-
-function truncate(text: string, max: number): string {
-  if (text.length <= max) return text;
-  return text.slice(0, max - 1).trimEnd() + "…";
 }

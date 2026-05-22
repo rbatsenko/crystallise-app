@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { motion, useMotionValue } from "framer-motion";
+import { motion } from "framer-motion";
 import { useRef, useCallback } from "react";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
@@ -40,8 +40,6 @@ function DraggableNavItem({
 }) {
   const navH = Math.round((navW * item.srcHeight) / NAV_SOURCE_WIDTH);
   const router = useRouter();
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
   const pointerStart = useRef<{ x: number; y: number } | null>(null);
 
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
@@ -72,8 +70,6 @@ function DraggableNavItem({
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
       style={{
-        x,
-        y,
         transformStyle: "preserve-3d",
         marginLeft: `${isMobile ? item.offsetX * 0.5 : item.offsetX}px`,
         cursor: "grab",
@@ -115,8 +111,6 @@ function DraggableLogo({
   delay: number;
 }) {
   const router = useRouter();
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
   const pointerStart = useRef<{ x: number; y: number } | null>(null);
   const size = isMobile ? 48 : 64;
 
@@ -146,7 +140,7 @@ function DraggableLogo({
       dragTransition={{ bounceStiffness: 300, bounceDamping: 30 }}
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
-      style={{ x, y, cursor: "grab", touchAction: "none" }}
+      style={{ cursor: "grab", touchAction: "none" }}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, delay }}
@@ -204,6 +198,15 @@ export default function Home() {
           delay={0.3 + navItems.length * 0.1}
         />
       </div>
+
+      <motion.p
+        className="absolute bottom-6 inset-x-0 z-10 text-center font-[family-name:var(--font-handwritten)] text-white/70 text-lg pointer-events-none select-none"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.3 + (navItems.length + 1) * 0.1 + 0.4 }}
+      >
+        psst — try dragging them ✦
+      </motion.p>
     </section>
   );
 }

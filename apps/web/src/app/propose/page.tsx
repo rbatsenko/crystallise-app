@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import Footer from "@/components/Footer";
 import PageTransition from "@/components/PageTransition";
+import ExpandableTextarea from "./ExpandableTextarea";
 
 const inputClasses =
   "w-full bg-cream border border-stone/40 rounded-none px-4 py-3 font-[family-name:var(--font-body)] text-charcoal text-sm focus:outline-none focus:border-gold transition-colors";
@@ -13,11 +14,26 @@ const labelClasses =
   "block font-[family-name:var(--font-display)] text-sm text-charcoal mb-2";
 
 const CHAR_LIMITS = {
-  overview: 500,
-  deliverables: 300,
-  budget: 200,
-  budgetBreakdown: 500,
-  additional: 300,
+  overview: 2000,
+  deliverables: 1000,
+  budget: 500,
+  budgetBreakdown: 2000,
+  additional: 1000,
+};
+
+type LongFieldKey =
+  | "overview"
+  | "deliverables"
+  | "budget"
+  | "budgetBreakdown"
+  | "additional";
+
+const EMPTY_LONG_FIELDS: Record<LongFieldKey, string> = {
+  overview: "",
+  deliverables: "",
+  budget: "",
+  budgetBreakdown: "",
+  additional: "",
 };
 
 type SubmitState = "idle" | "submitting" | "success" | "error";
@@ -38,12 +54,14 @@ const ERROR_MESSAGES: Record<string, string> = {
 };
 
 export default function ProposePage() {
-  const [charCounts, setCharCounts] = useState<Record<string, number>>({});
+  const [fields, setFields] = useState<Record<LongFieldKey, string>>(
+    EMPTY_LONG_FIELDS,
+  );
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const handleCharCount = (field: string, value: string) => {
-    setCharCounts((prev) => ({ ...prev, [field]: value.length }));
+  const setField = (key: LongFieldKey) => (value: string) => {
+    setFields((prev) => ({ ...prev, [key]: value }));
   };
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -156,102 +174,60 @@ export default function ProposePage() {
               />
             </div>
 
-            {/* General Overview */}
-            <div>
-              <label htmlFor="overview" className={labelClasses}>
-                General Overview
-              </label>
-              <textarea
-                id="overview"
-                name="overview"
-                rows={4}
-                maxLength={CHAR_LIMITS.overview}
-                className={`${inputClasses} resize-none`}
-                placeholder="Describe your project idea — what is it, and why does it matter?"
-                onChange={(e) => handleCharCount("overview", e.target.value)}
-              />
-              <p className="text-xs text-slate/50 mt-1 text-right font-[family-name:var(--font-body)]">
-                {charCounts.overview || 0}/{CHAR_LIMITS.overview}
-              </p>
-            </div>
+            <ExpandableTextarea
+              id="overview"
+              name="overview"
+              label="General Overview"
+              rows={4}
+              maxLength={CHAR_LIMITS.overview}
+              placeholder="Describe your project idea — what is it, and why does it matter?"
+              value={fields.overview}
+              onChange={setField("overview")}
+            />
 
-            {/* Deliverables */}
-            <div>
-              <label htmlFor="deliverables" className={labelClasses}>
-                Deliverables
-              </label>
-              <textarea
-                id="deliverables"
-                name="deliverables"
-                rows={3}
-                maxLength={CHAR_LIMITS.deliverables}
-                className={`${inputClasses} resize-none`}
-                placeholder="What will the project produce? (e.g. a short film, a zine, a photo series...)"
-                onChange={(e) => handleCharCount("deliverables", e.target.value)}
-              />
-              <p className="text-xs text-slate/50 mt-1 text-right font-[family-name:var(--font-body)]">
-                {charCounts.deliverables || 0}/{CHAR_LIMITS.deliverables}
-              </p>
-            </div>
+            <ExpandableTextarea
+              id="deliverables"
+              name="deliverables"
+              label="Deliverables"
+              rows={3}
+              maxLength={CHAR_LIMITS.deliverables}
+              placeholder="What will the project produce? (e.g. a short film, a zine, a photo series...)"
+              value={fields.deliverables}
+              onChange={setField("deliverables")}
+            />
 
-            {/* Required Budget */}
-            <div>
-              <label htmlFor="budget" className={labelClasses}>
-                Required Budget
-              </label>
-              <textarea
-                id="budget"
-                name="budget"
-                rows={2}
-                maxLength={CHAR_LIMITS.budget}
-                className={`${inputClasses} resize-none`}
-                placeholder="How much funding do you need, roughly?"
-                onChange={(e) => handleCharCount("budget", e.target.value)}
-              />
-              <p className="text-xs text-slate/50 mt-1 text-right font-[family-name:var(--font-body)]">
-                {charCounts.budget || 0}/{CHAR_LIMITS.budget}
-              </p>
-            </div>
+            <ExpandableTextarea
+              id="budget"
+              name="budget"
+              label="Required Budget"
+              rows={2}
+              maxLength={CHAR_LIMITS.budget}
+              placeholder="How much funding do you need, roughly?"
+              value={fields.budget}
+              onChange={setField("budget")}
+            />
 
-            {/* Budget Breakdown */}
-            <div>
-              <label htmlFor="budgetBreakdown" className={labelClasses}>
-                Budget Breakdown
-              </label>
-              <textarea
-                id="budgetBreakdown"
-                name="budgetBreakdown"
-                rows={4}
-                maxLength={CHAR_LIMITS.budgetBreakdown}
-                className={`${inputClasses} resize-none`}
-                placeholder="Break down how the budget would be spent (e.g. equipment hire, travel, editing...)"
-                onChange={(e) =>
-                  handleCharCount("budgetBreakdown", e.target.value)
-                }
-              />
-              <p className="text-xs text-slate/50 mt-1 text-right font-[family-name:var(--font-body)]">
-                {charCounts.budgetBreakdown || 0}/{CHAR_LIMITS.budgetBreakdown}
-              </p>
-            </div>
+            <ExpandableTextarea
+              id="budgetBreakdown"
+              name="budgetBreakdown"
+              label="Budget Breakdown"
+              rows={4}
+              maxLength={CHAR_LIMITS.budgetBreakdown}
+              placeholder="Break down how the budget would be spent (e.g. equipment hire, travel, editing...)"
+              value={fields.budgetBreakdown}
+              onChange={setField("budgetBreakdown")}
+            />
 
-            {/* Additional Information */}
-            <div>
-              <label htmlFor="additional" className={labelClasses}>
-                Additional Information
-              </label>
-              <textarea
-                id="additional"
-                name="additional"
-                rows={3}
-                maxLength={CHAR_LIMITS.additional}
-                className={`${inputClasses} resize-none`}
-                placeholder="Anything else you'd like us to know?"
-                onChange={(e) => handleCharCount("additional", e.target.value)}
-              />
-              <p className="text-xs text-slate/50 mt-1 text-right font-[family-name:var(--font-body)]">
-                {charCounts.additional || 0}/{CHAR_LIMITS.additional}
-              </p>
-            </div>
+            <ExpandableTextarea
+              id="additional"
+              name="additional"
+              label="Additional Information"
+              rows={3}
+              maxLength={CHAR_LIMITS.additional}
+              placeholder="Anything else you'd like us to know?"
+              value={fields.additional}
+              onChange={setField("additional")}
+            />
 
             {/* Supporting Images */}
             <div>

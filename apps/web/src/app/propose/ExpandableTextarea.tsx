@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 type Props = {
   id: string;
@@ -36,9 +37,14 @@ export default function ExpandableTextarea({
   label,
 }: Props) {
   const [expanded, setExpanded] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const inlineRef = useRef<HTMLTextAreaElement>(null);
   const modalRef = useRef<HTMLTextAreaElement>(null);
   const minHeight = rows * LINE_HEIGHT + VERTICAL_PADDING;
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useLayoutEffect(() => {
     if (inlineRef.current) autoGrow(inlineRef.current, minHeight);
@@ -95,51 +101,53 @@ export default function ExpandableTextarea({
         {value.length}/{maxLength}
       </p>
 
-      {expanded && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label={`${label} editor`}
-          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
-          onClick={() => setExpanded(false)}
-        >
+      {expanded && mounted &&
+        createPortal(
           <div
-            className="bg-warm-gray w-full max-w-3xl max-h-[90vh] flex flex-col p-6 shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${label} editor`}
+            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+            onClick={() => setExpanded(false)}
           >
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="font-[family-name:var(--font-display)] text-xl text-charcoal">
-                {label}
-              </h2>
-              <button
-                type="button"
-                onClick={() => setExpanded(false)}
-                className="text-charcoal/60 hover:text-charcoal text-3xl leading-none cursor-pointer"
-                aria-label="Close editor"
-              >
-                ×
-              </button>
+            <div
+              className="bg-warm-gray w-full max-w-3xl max-h-[90vh] flex flex-col p-6 shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="font-[family-name:var(--font-display)] text-xl text-charcoal">
+                  {label}
+                </h2>
+                <button
+                  type="button"
+                  onClick={() => setExpanded(false)}
+                  className="text-charcoal/60 hover:text-charcoal text-3xl leading-none cursor-pointer"
+                  aria-label="Close editor"
+                >
+                  ×
+                </button>
+              </div>
+              <textarea
+                ref={modalRef}
+                maxLength={maxLength}
+                className={`${textareaClasses} flex-1 resize-none`}
+                style={{ minHeight: "60vh" }}
+                placeholder={placeholder}
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+              />
+              <div className="flex items-center justify-between mt-3">
+                <p className="text-xs text-slate/60 font-[family-name:var(--font-body)]">
+                  Press Esc to close - your text is kept.
+                </p>
+                <p className="text-xs text-slate/60 font-[family-name:var(--font-body)]">
+                  {value.length}/{maxLength}
+                </p>
+              </div>
             </div>
-            <textarea
-              ref={modalRef}
-              maxLength={maxLength}
-              className={`${textareaClasses} flex-1 resize-none`}
-              style={{ minHeight: "60vh" }}
-              placeholder={placeholder}
-              value={value}
-              onChange={(e) => onChange(e.target.value)}
-            />
-            <div className="flex items-center justify-between mt-3">
-              <p className="text-xs text-slate/60 font-[family-name:var(--font-body)]">
-                Press Esc to close — your text is kept.
-              </p>
-              <p className="text-xs text-slate/60 font-[family-name:var(--font-body)]">
-                {value.length}/{maxLength}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }

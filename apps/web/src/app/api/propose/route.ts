@@ -6,11 +6,11 @@ const MAX_FILE_BYTES = 5 * 1024 * 1024;
 const ALLOWED_MIME = new Set(["image/jpeg", "image/png", "image/webp"]);
 
 const CHAR_LIMITS = {
-  overview: 500,
-  deliverables: 300,
-  budget: 200,
-  budget_breakdown: 500,
-  additional: 300,
+  overview: 2000,
+  deliverables: 1000,
+  budget: 500,
+  budget_breakdown: 2000,
+  additional: 1000,
 } as const;
 
 const BUCKET = "proposal-images";

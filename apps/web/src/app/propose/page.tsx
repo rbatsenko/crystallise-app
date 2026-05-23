@@ -89,7 +89,7 @@ export default function ProposePage() {
       }
       setSubmitState("success");
     } catch {
-      setErrorMsg("Network error — check your connection and try again.");
+      setErrorMsg("Network error - check your connection and try again.");
       setSubmitState("error");
     }
   }
@@ -130,7 +130,7 @@ export default function ProposePage() {
               transition={{ duration: 0.5 }}
             >
               <h2 className="font-[family-name:var(--font-display)] text-3xl text-charcoal mb-3">
-                Thanks — we&apos;ve got it.
+                Thanks - we&apos;ve got it.
               </h2>
               <p className="font-[family-name:var(--font-body)] text-sm text-slate">
                 We&apos;ll review your idea and get back to you at the email you
@@ -180,7 +180,7 @@ export default function ProposePage() {
               label="General Overview"
               rows={4}
               maxLength={CHAR_LIMITS.overview}
-              placeholder="Describe your project idea — what is it, and why does it matter?"
+              placeholder="Describe your project idea - what is it, and why does it matter?"
               value={fields.overview}
               onChange={setField("overview")}
             />

@@ -4,6 +4,7 @@ import { createClient } from "@crystallise/supabase/server";
 import { StatusSelect } from "./status-select";
 import { NotesEditor } from "./notes-editor";
 import { ImageGallery } from "@/components/image-gallery";
+import { CopyButton } from "@/components/copy-button";
 import { relativeTime } from "@/lib/time";
 
 const FIELDS: { key: Field; label: string }[] = [
@@ -69,13 +70,14 @@ export default async function ProposalPage({
             <h1 className="text-2xl font-semibold tracking-tight">
               {proposal.name}
             </h1>
-            <p className="text-sm text-[color:var(--color-text-muted)] mt-1">
+            <p className="text-sm text-[color:var(--color-text-muted)] mt-1 inline-flex items-center gap-2">
               <a
                 href={`mailto:${proposal.email}`}
                 className="hover:text-[color:var(--color-text)] underline-offset-4 hover:underline"
               >
                 {proposal.email}
               </a>
+              <CopyButton value={proposal.email} label="email" />
             </p>
           </header>
 

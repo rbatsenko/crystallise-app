@@ -33,6 +33,7 @@ export type Database = {
         Row: {
           additional: string | null
           admin_notes: string | null
+          archived_at: string | null
           budget: string | null
           budget_breakdown: string | null
           created_at: string
@@ -47,6 +48,7 @@ export type Database = {
         Insert: {
           additional?: string | null
           admin_notes?: string | null
+          archived_at?: string | null
           budget?: string | null
           budget_breakdown?: string | null
           created_at?: string
@@ -61,6 +63,7 @@ export type Database = {
         Update: {
           additional?: string | null
           admin_notes?: string | null
+          archived_at?: string | null
           budget?: string | null
           budget_breakdown?: string | null
           created_at?: string

@@ -9,9 +9,9 @@ import { relativeTime } from "@/lib/time";
 import type { Database } from "@crystallise/supabase/types";
 
 type Status = Database["public"]["Enums"]["proposal_status"];
-type Filter = Status | "all";
+type Filter = Status | "all" | "archived";
 
-const FILTERS: Filter[] = ["all", ...STATUS_ORDER];
+const FILTERS: Filter[] = ["all", ...STATUS_ORDER, "archived"];
 
 export default async function ProposalsPage({
   searchParams,
@@ -25,11 +25,13 @@ export default async function ProposalsPage({
 
   const [listResult, { data: counts }] = await Promise.all([
     listProposals(supabase, activeFilter),
-    supabase.from("proposals").select("status"),
+    supabase.from("proposals").select("status, archived_at"),
   ]);
 
-  const byStatus = countByStatus(counts ?? []);
-  const totalCount = counts?.length ?? 0;
+  const active = (counts ?? []).filter((r) => r.archived_at === null);
+  const byStatus = countByStatus(active);
+  const totalCount = active.length;
+  const archivedCount = (counts?.length ?? 0) - totalCount;
 
   return (
     <main className="max-w-5xl mx-auto px-6 md:px-10 py-8">
@@ -44,8 +46,13 @@ export default async function ProposalsPage({
 
       <div className="flex flex-wrap items-center gap-1.5 mb-5">
         {FILTERS.map((f) => {
-          const count = f === "all" ? totalCount : byStatus[f] ?? 0;
-          const active = activeFilter === f;
+          const count =
+            f === "all"
+              ? totalCount
+              : f === "archived"
+                ? archivedCount
+                : byStatus[f] ?? 0;
+          const isActive = activeFilter === f;
           return (
             <Link
               key={f}
@@ -53,16 +60,20 @@ export default async function ProposalsPage({
               scroll={false}
               className={[
                 "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors",
-                active
+                isActive
                   ? "bg-[color:var(--color-text)] text-[color:var(--color-surface)]"
                   : "bg-[color:var(--color-surface-muted)] text-[color:var(--color-text-muted)] hover:text-[color:var(--color-text)]",
               ].join(" ")}
             >
-              {f === "all" ? "All" : statusLabel(f)}
+              {f === "all"
+                ? "All"
+                : f === "archived"
+                  ? "Archived"
+                  : statusLabel(f)}
               <span
                 className={[
                   "tabular-nums",
-                  active
+                  isActive
                     ? "opacity-70"
                     : "text-[color:var(--color-text-subtle)]",
                 ].join(" ")}
@@ -126,7 +137,8 @@ function isFilter(v: string | undefined): v is Filter {
     v === "new" ||
     v === "reviewing" ||
     v === "accepted" ||
-    v === "declined"
+    v === "declined" ||
+    v === "archived"
   );
 }
 
@@ -147,7 +159,12 @@ async function listProposals(
     .from("proposals")
     .select("id, created_at, name, email, overview, status")
     .order("created_at", { ascending: false });
-  if (filter !== "all") q = q.eq("status", filter);
+  if (filter === "archived") {
+    q = q.not("archived_at", "is", null);
+  } else {
+    q = q.is("archived_at", null);
+    if (filter !== "all") q = q.eq("status", filter);
+  }
   const { data, error } = await q;
   return { data: data ?? [], error };
 }
@@ -177,13 +194,15 @@ function Avatar({ name }: { name: string }) {
 }
 
 function EmptyState({ filter }: { filter: Filter }) {
+  const message =
+    filter === "all"
+      ? "No proposals yet. The first one will land here when someone submits the form."
+      : filter === "archived"
+        ? "No archived proposals."
+        : `No proposals with status “${statusLabel(filter)}”.`;
   return (
     <div className="rounded-xl border border-dashed border-[color:var(--color-border)] px-8 py-16 text-center">
-      <p className="text-sm text-[color:var(--color-text-muted)]">
-        {filter === "all"
-          ? "No proposals yet. The first one will land here when someone submits the form."
-          : `No proposals with status “${statusLabel(filter as Status)}”.`}
-      </p>
+      <p className="text-sm text-[color:var(--color-text-muted)]">{message}</p>
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@crystallise/supabase/server";
 import { StatusSelect } from "./status-select";
 import { NotesEditor } from "./notes-editor";
+import { ProposalActions } from "./proposal-actions";
 import { ImageGallery } from "@/components/image-gallery";
 import { CopyButton } from "@/components/copy-button";
 import { Linkify } from "@/components/linkify";
@@ -68,9 +69,16 @@ export default async function ProposalPage({
       <div className="grid lg:grid-cols-[minmax(0,1fr)_280px] gap-8 lg:gap-10 items-start">
         <div className="min-w-0">
           <header className="mb-8">
-            <h1 className="text-2xl font-semibold tracking-tight">
-              {proposal.name}
-            </h1>
+            <div className="flex items-center gap-3 flex-wrap">
+              <h1 className="text-2xl font-semibold tracking-tight">
+                {proposal.name}
+              </h1>
+              {proposal.archived_at && (
+                <span className="inline-flex items-center rounded-full bg-[color:var(--color-surface-muted)] px-2 py-0.5 text-xs font-medium text-[color:var(--color-text-muted)] ring-1 ring-inset ring-[color:var(--color-border-strong)]">
+                  Archived
+                </span>
+              )}
+            </div>
             <p className="text-sm text-[color:var(--color-text-muted)] mt-1 inline-flex items-center gap-2">
               <a
                 href={`mailto:${proposal.email}`}
@@ -147,6 +155,17 @@ export default async function ProposalPage({
             <NotesEditor
               id={proposal.id}
               initial={proposal.admin_notes ?? ""}
+            />
+          </div>
+
+          <div className="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-surface-raised)] p-5">
+            <h2 className="text-[11px] uppercase tracking-wider text-[color:var(--color-text-subtle)] mb-3 font-medium">
+              Actions
+            </h2>
+            <ProposalActions
+              id={proposal.id}
+              archived={proposal.archived_at !== null}
+              name={proposal.name}
             />
           </div>
         </aside>

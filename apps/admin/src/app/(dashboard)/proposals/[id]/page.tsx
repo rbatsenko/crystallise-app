@@ -5,6 +5,7 @@ import { StatusSelect } from "./status-select";
 import { NotesEditor } from "./notes-editor";
 import { ImageGallery } from "@/components/image-gallery";
 import { CopyButton } from "@/components/copy-button";
+import { Linkify } from "@/components/linkify";
 import { relativeTime } from "@/lib/time";
 
 const FIELDS: { key: Field; label: string }[] = [
@@ -94,7 +95,7 @@ export default async function ProposalPage({
                     {label}
                   </h2>
                   <p className="whitespace-pre-wrap text-sm leading-relaxed">
-                    {value}
+                    <Linkify text={value} />
                   </p>
                 </section>
               );

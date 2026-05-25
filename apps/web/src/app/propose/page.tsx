@@ -7,15 +7,11 @@ import Footer from "@/components/Footer";
 import PageTransition from "@/components/PageTransition";
 import { compressImage } from "./compressImage";
 import ExpandableTextarea from "./ExpandableTextarea";
+import { ALLOWED_MIME, MAX_TOTAL_UPLOAD_BYTES } from "./limits";
 
 // Compress any image larger than this before uploading. Picks up phone
 // photos (typically 4-15 MB) while leaving already-small files alone.
-const COMPRESS_THRESHOLD_BYTES = 1 * 1024 * 1024;
-
-// Max total request body Vercel will accept for an App Router route
-// handler. Stay safely under it so we never trigger a platform-level 413
-// (which we can't intercept with a friendly error).
-const MAX_TOTAL_UPLOAD_BYTES = 4 * 1024 * 1024;
+const COMPRESS_THRESHOLD_BYTES = 1024 * 1024;
 
 const inputClasses =
   "w-full bg-cream border border-stone/40 rounded-none px-4 py-3 font-[family-name:var(--font-body)] text-charcoal text-sm focus:outline-none focus:border-gold transition-colors";
@@ -99,21 +95,16 @@ export default function ProposePage() {
     let processedFiles: File[] = originalFiles;
     if (originalFiles.some((f) => f.size > COMPRESS_THRESHOLD_BYTES)) {
       setSubmitState("compressing");
-      try {
-        processedFiles = await Promise.all(
-          originalFiles.map((file) =>
-            file.size > COMPRESS_THRESHOLD_BYTES
-              ? compressImage(file).catch((err) => {
-                  console.error("[propose] compression failed", err);
-                  return file;
-                })
-              : Promise.resolve(file),
-          ),
-        );
-      } catch (err) {
-        console.error("[propose] compression error", err);
-        processedFiles = originalFiles;
-      }
+      processedFiles = await Promise.all(
+        originalFiles.map((file) =>
+          file.size > COMPRESS_THRESHOLD_BYTES
+            ? compressImage(file).catch((err) => {
+                console.error("[propose] compression failed", err);
+                return file;
+              })
+            : file,
+        ),
+      );
     }
 
     const totalBytes = processedFiles.reduce((sum, f) => sum + f.size, 0);
@@ -304,7 +295,7 @@ export default function ProposePage() {
                 id="images"
                 name="images"
                 multiple
-                accept="image/jpeg,image/png,image/webp"
+                accept={ALLOWED_MIME.join(",")}
                 className="w-full font-[family-name:var(--font-body)] text-sm text-slate file:mr-4 file:py-2 file:px-4 file:border file:border-stone/40 file:bg-cream/60 file:text-charcoal file:text-sm file:font-[family-name:var(--font-body)] file:cursor-pointer file:rounded-none hover:file:bg-cream transition-colors"
               />
             </div>

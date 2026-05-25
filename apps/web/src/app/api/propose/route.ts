@@ -1,9 +1,10 @@
 import { after, NextResponse, type NextRequest } from "next/server";
 import { createAdminClient } from "@crystallise/supabase/admin";
-
-const MAX_FILES = 5;
-const MAX_FILE_BYTES = 5 * 1024 * 1024;
-const ALLOWED_MIME = new Set(["image/jpeg", "image/png", "image/webp"]);
+import {
+  ALLOWED_MIME_SET,
+  MAX_FILE_BYTES,
+  MAX_FILES,
+} from "@/app/propose/limits";
 
 const CHAR_LIMITS = {
   overview: 2000,
@@ -76,7 +77,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "too_many_files" }, { status: 400 });
   }
   for (const file of files) {
-    if (!ALLOWED_MIME.has(file.type)) {
+    if (!ALLOWED_MIME_SET.has(file.type)) {
       return NextResponse.json(
         { error: "invalid_file_type" },
         { status: 400 },

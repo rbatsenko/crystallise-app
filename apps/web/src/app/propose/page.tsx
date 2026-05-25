@@ -5,9 +5,10 @@ import Link from "next/link";
 import { useState } from "react";
 import Footer from "@/components/Footer";
 import PageTransition from "@/components/PageTransition";
+import { createClient as createSupabaseBrowser } from "@crystallise/supabase/browser";
 import { compressImage } from "./compressImage";
 import ExpandableTextarea from "./ExpandableTextarea";
-import { ALLOWED_MIME, MAX_TOTAL_UPLOAD_BYTES } from "./limits";
+import { ALLOWED_MIME, BUCKET, MAX_FILE_BYTES } from "./limits";
 
 // Compress any image larger than this before uploading. Picks up phone
 // photos (typically 4-15 MB) while leaving already-small files alone.
@@ -45,6 +46,7 @@ const EMPTY_LONG_FIELDS: Record<LongFieldKey, string> = {
 type SubmitState =
   | "idle"
   | "compressing"
+  | "uploading"
   | "submitting"
   | "success"
   | "error";
@@ -55,21 +57,29 @@ const ERROR_MESSAGES: Record<string, string> = {
   invalid_file_type: "Images must be JPEG, PNG, or WebP.",
   file_too_large: "Each image must be under 5MB.",
   too_many_files: "Maximum 5 images.",
+  no_files: "Please attach at least one image, or skip the upload field.",
   overview_too_long: "Overview is too long.",
   deliverables_too_long: "Deliverables is too long.",
   budget_too_long: "Budget is too long.",
   budget_breakdown_too_long: "Budget breakdown is too long.",
   additional_too_long: "Additional info is too long.",
-  upload_failed: "Image upload failed. Try again?",
+  sign_failed: "We couldn't prepare your upload. Try again?",
+  upload_not_found:
+    "Your images didn't finish uploading. Check your connection and try again.",
+  invalid_proposal_id: "Something went wrong. Try refreshing the page.",
+  invalid_image_path: "Something went wrong with the images. Try again?",
   insert_failed: "Something went wrong saving your proposal.",
   invalid_form: "We couldn't read the form data. Try again?",
 };
 
-const PAYLOAD_TOO_LARGE_MSG =
-  "Your images are still too large after compression. Try fewer or smaller photos.";
 const NETWORK_ERROR_MSG =
   "Network error - check your connection and try again.";
 const GENERIC_ERROR_MSG = "Something went wrong. Try again?";
+const UPLOAD_FAILED_MSG = "Image upload failed. Try again?";
+
+function str(v: FormDataEntryValue | null): string {
+  return typeof v === "string" ? v.trim() : "";
+}
 
 export default function ProposePage() {
   const [fields, setFields] = useState<Record<LongFieldKey, string>>(
@@ -107,29 +117,104 @@ export default function ProposePage() {
       );
     }
 
-    const totalBytes = processedFiles.reduce((sum, f) => sum + f.size, 0);
-    if (totalBytes > MAX_TOTAL_UPLOAD_BYTES) {
-      setErrorMsg(PAYLOAD_TOO_LARGE_MSG);
+    // Per-file ceiling — total size is no longer a concern since each
+    // image streams direct to Supabase, bypassing Vercel's body limit.
+    const oversize = processedFiles.find((f) => f.size > MAX_FILE_BYTES);
+    if (oversize) {
+      setErrorMsg(ERROR_MESSAGES.file_too_large);
+      setSubmitState("error");
+      return;
+    }
+    if (!processedFiles.every((f) => ALLOWED_MIME.includes(
+      f.type as (typeof ALLOWED_MIME)[number],
+    ))) {
+      setErrorMsg(ERROR_MESSAGES.invalid_file_type);
       setSubmitState("error");
       return;
     }
 
-    formData.delete("images");
-    for (const file of processedFiles) formData.append("images", file);
+    const metadata = {
+      name: str(formData.get("name")),
+      email: str(formData.get("email")),
+      overview: str(formData.get("overview")),
+      deliverables: str(formData.get("deliverables")),
+      budget: str(formData.get("budget")),
+      budgetBreakdown: str(formData.get("budgetBreakdown")),
+      additional: str(formData.get("additional")),
+      website: str(formData.get("website")), // honeypot
+    };
+
+    let proposalId: string;
+    let imagePaths: string[] = [];
+
+    if (processedFiles.length > 0) {
+      setSubmitState("uploading");
+      let signResp: Response;
+      try {
+        signResp = await fetch("/api/propose/sign-uploads", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            files: processedFiles.map((f) => ({
+              type: f.type,
+              size: f.size,
+            })),
+          }),
+        });
+      } catch {
+        setErrorMsg(NETWORK_ERROR_MSG);
+        setSubmitState("error");
+        return;
+      }
+      if (!signResp.ok) {
+        const payload = (await signResp.json().catch(() => ({}))) as {
+          error?: string;
+        };
+        setErrorMsg(
+          (payload.error && ERROR_MESSAGES[payload.error]) || GENERIC_ERROR_MSG,
+        );
+        setSubmitState("error");
+        return;
+      }
+      const signed = (await signResp.json()) as {
+        proposalId: string;
+        uploads: Array<{ path: string; token: string; contentType: string }>;
+      };
+      proposalId = signed.proposalId;
+
+      const supabase = createSupabaseBrowser();
+      try {
+        await Promise.all(
+          signed.uploads.map(async ({ path, token, contentType }, i) => {
+            const file = processedFiles[i];
+            const { error } = await supabase.storage
+              .from(BUCKET)
+              .uploadToSignedUrl(path, token, file, {
+                contentType: file.type || contentType,
+              });
+            if (error) throw error;
+          }),
+        );
+      } catch (err) {
+        console.error("[propose] direct upload failed", err);
+        setErrorMsg(UPLOAD_FAILED_MSG);
+        setSubmitState("error");
+        return;
+      }
+      imagePaths = signed.uploads.map((u) => u.path);
+    } else {
+      proposalId = crypto.randomUUID();
+    }
 
     setSubmitState("submitting");
     try {
       const res = await fetch("/api/propose", {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ proposalId, imagePaths, ...metadata }),
       });
       if (res.ok) {
         setSubmitState("success");
-        return;
-      }
-      if (res.status === 413) {
-        setErrorMsg(PAYLOAD_TOO_LARGE_MSG);
-        setSubmitState("error");
         return;
       }
       const payload = (await res.json().catch(() => ({}))) as {
@@ -287,8 +372,8 @@ export default function ProposePage() {
               </label>
               <p className="text-xs text-slate/60 mb-2 font-[family-name:var(--font-body)]">
                 Upload any reference images, mood boards, or visuals that help
-                convey your idea. Up to 5 images (JPEG, PNG, WebP). Large
-                photos are automatically compressed before upload.
+                convey your idea. Up to 5 images, 5MB each (JPEG, PNG, WebP).
+                Large photos are automatically compressed before upload.
               </p>
               <input
                 type="file"
@@ -314,6 +399,7 @@ export default function ProposePage() {
                 type="submit"
                 disabled={
                   submitState === "compressing" ||
+                  submitState === "uploading" ||
                   submitState === "submitting"
                 }
                 className="torn-paper bg-gold px-8 py-3 font-[family-name:var(--font-display)] text-charcoal text-sm tracking-wide hover:bg-gold/80 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
@@ -321,9 +407,11 @@ export default function ProposePage() {
               >
                 {submitState === "compressing"
                   ? "Optimizing images…"
-                  : submitState === "submitting"
-                    ? "Sending…"
-                    : "Submit Idea"}
+                  : submitState === "uploading"
+                    ? "Uploading images…"
+                    : submitState === "submitting"
+                      ? "Sending…"
+                      : "Submit Idea"}
               </button>
               {submitState === "error" && errorMsg && (
                 <p className="font-[family-name:var(--font-body)] text-sm text-red-700">

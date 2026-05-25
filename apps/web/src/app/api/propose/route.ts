@@ -2,6 +2,7 @@ import { after, NextResponse, type NextRequest } from "next/server";
 import { createAdminClient } from "@crystallise/supabase/admin";
 import {
   ALLOWED_MIME_SET,
+  BUCKET,
   MAX_FILE_BYTES,
   MAX_FILES,
 } from "@/app/propose/limits";
@@ -14,31 +15,36 @@ const CHAR_LIMITS = {
   additional: 1000,
 } as const;
 
-const BUCKET = "proposal-images";
 const ADMIN_URL = "https://crystallise-admin.vercel.app";
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export async function POST(request: NextRequest) {
-  let form: FormData;
+  let body: Record<string, unknown>;
   try {
-    form = await request.formData();
+    body = (await request.json()) as Record<string, unknown>;
   } catch {
     return NextResponse.json({ error: "invalid_form" }, { status: 400 });
   }
 
   // Honeypot: real users never see this field. If it's filled, silently
   // pretend the submission went through so the bot moves on.
-  if (str(form.get("website"))) {
+  if (str(body.website)) {
     return NextResponse.json({ id: crypto.randomUUID() }, { status: 201 });
   }
 
-  const name = str(form.get("name"));
-  const email = str(form.get("email"));
-  const overview = str(form.get("overview"));
-  const deliverables = str(form.get("deliverables"));
-  const budget = str(form.get("budget"));
-  const budget_breakdown = str(form.get("budgetBreakdown"));
-  const additional = str(form.get("additional"));
+  const proposalId = str(body.proposalId);
+  const name = str(body.name);
+  const email = str(body.email);
+  const overview = str(body.overview);
+  const deliverables = str(body.deliverables);
+  const budget = str(body.budget);
+  const budget_breakdown = str(body.budgetBreakdown);
+  const additional = str(body.additional);
 
+  if (!UUID_RE.test(proposalId)) {
+    return NextResponse.json({ error: "invalid_proposal_id" }, { status: 400 });
+  }
   if (!name || !email || !overview) {
     return NextResponse.json(
       { error: "missing_required_fields" },
@@ -60,7 +66,10 @@ export async function POST(request: NextRequest) {
   if (budget && budget.length > CHAR_LIMITS.budget) {
     return NextResponse.json({ error: "budget_too_long" }, { status: 400 });
   }
-  if (budget_breakdown && budget_breakdown.length > CHAR_LIMITS.budget_breakdown) {
+  if (
+    budget_breakdown &&
+    budget_breakdown.length > CHAR_LIMITS.budget_breakdown
+  ) {
     return NextResponse.json(
       { error: "budget_breakdown_too_long" },
       { status: 400 },
@@ -70,41 +79,56 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "additional_too_long" }, { status: 400 });
   }
 
-  const files = form
-    .getAll("images")
-    .filter((v): v is File => v instanceof File && v.size > 0);
-  if (files.length > MAX_FILES) {
+  const imagePaths = Array.isArray(body.imagePaths)
+    ? body.imagePaths.filter((p): p is string => typeof p === "string")
+    : [];
+  if (imagePaths.length > MAX_FILES) {
     return NextResponse.json({ error: "too_many_files" }, { status: 400 });
   }
-  for (const file of files) {
-    if (!ALLOWED_MIME_SET.has(file.type)) {
+  // Every claimed path must live inside this submission's proposalId
+  // folder. Stops a caller from attaching another proposal's images.
+  for (const path of imagePaths) {
+    if (!path.startsWith(`${proposalId}/`) || path.includes("..")) {
+      return NextResponse.json(
+        { error: "invalid_image_path" },
+        { status: 400 },
+      );
+    }
+  }
+
+  const supabase = createAdminClient();
+
+  // Verify each uploaded object exists and matches our size/mime limits.
+  // Signed-URL uploads bypass our route handler entirely, so this is the
+  // first chance the server has to inspect what actually landed.
+  for (const path of imagePaths) {
+    const { data: info, error } = await supabase.storage
+      .from(BUCKET)
+      .info(path);
+    if (error || !info) {
+      console.error("[propose] info failed", { path, error });
+      await cleanup(supabase, imagePaths);
+      return NextResponse.json(
+        { error: "upload_not_found" },
+        { status: 400 },
+      );
+    }
+    const size = typeof info.size === "number" ? info.size : 0;
+    const contentType =
+      (info as { contentType?: string }).contentType ??
+      (info as { content_type?: string }).content_type ??
+      "";
+    if (!ALLOWED_MIME_SET.has(contentType)) {
+      await cleanup(supabase, imagePaths);
       return NextResponse.json(
         { error: "invalid_file_type" },
         { status: 400 },
       );
     }
-    if (file.size > MAX_FILE_BYTES) {
+    if (size > MAX_FILE_BYTES) {
+      await cleanup(supabase, imagePaths);
       return NextResponse.json({ error: "file_too_large" }, { status: 400 });
     }
-  }
-
-  const proposalId = crypto.randomUUID();
-  const supabase = createAdminClient();
-
-  const imagePaths: string[] = [];
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
-    const ext = extFromMime(file.type);
-    const path = `${proposalId}/${i}${ext}`;
-    const { error } = await supabase.storage
-      .from(BUCKET)
-      .upload(path, file, { contentType: file.type, upsert: false });
-    if (error) {
-      await cleanup(supabase, imagePaths);
-      console.error("[propose] upload failed", error);
-      return NextResponse.json({ error: "upload_failed" }, { status: 500 });
-    }
-    imagePaths.push(path);
   }
 
   const { error: insertError } = await supabase.from("proposals").insert({
@@ -149,15 +173,8 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({ id: proposalId }, { status: 201 });
 }
 
-function str(v: FormDataEntryValue | null): string {
+function str(v: unknown): string {
   return typeof v === "string" ? v.trim() : "";
-}
-
-function extFromMime(mime: string): string {
-  if (mime === "image/jpeg") return ".jpg";
-  if (mime === "image/png") return ".png";
-  if (mime === "image/webp") return ".webp";
-  return "";
 }
 
 async function cleanup(
@@ -215,7 +232,10 @@ async function notifySlack(proposal: {
   if (proposal.deliverables) {
     blocks.push({
       type: "section",
-      text: { type: "mrkdwn", text: `*Deliverables*\n${proposal.deliverables}` },
+      text: {
+        type: "mrkdwn",
+        text: `*Deliverables*\n${proposal.deliverables}`,
+      },
     });
   }
 

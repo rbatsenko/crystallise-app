@@ -24,11 +24,11 @@ const events: EventItem[] = [
   {
     title: "Crystallise Launch",
     date: "Saturday 21st March 2026",
-    location: "MURO — 845 Brayards Rd, London SE15 3RD",
+    location: "MURO - 845 Brayards Rd, London SE15 3RD",
     schedule: [
-      { time: "2pm", details: "Film screenings — squ(h)amish II by Hamish McArthur, MOYO, and Spirit Quest by Quinn Mason" },
+      { time: "2pm", details: "Film screenings - squ(h)amish II by Hamish McArthur, MOYO, and Spirit Quest by Quinn Mason" },
       { time: "3:30pm", details: "Crystallise Launch Q&A" },
-      { time: "5–11pm", details: "Climbing, DJs, drinks, and food" },
+      { time: "5-11pm", details: "Climbing, DJs, drinks, and food" },
     ],
     extra: "Thank you to everyone who came out to celebrate the launch with us.",
     color: "#1a1a1a",
@@ -161,7 +161,7 @@ export default function EventsPage() {
                       {event.schedule.map((item) => (
                         <p key={item.time} className="font-[family-name:var(--font-body)] text-sm text-cream/70 leading-relaxed">
                           <span className="text-cream/90 font-medium">{item.time}</span>
-                          {" — "}
+                          {" - "}
                           {item.details}
                         </p>
                       ))}

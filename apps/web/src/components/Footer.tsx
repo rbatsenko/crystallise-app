@@ -12,7 +12,7 @@ export default function Footer({ transparent = false }: { transparent?: boolean 
         <Link href="/" className="hover:opacity-80 transition-opacity">
           <Image
             src="/images/crystallise-logo-no-text.png"
-            alt="Crystallise — Back to Home"
+            alt="Crystallise - Back to Home"
             width={40}
             height={40}
             className="invert drop-shadow-md"

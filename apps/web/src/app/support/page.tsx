@@ -162,7 +162,7 @@ export default function SupportPage() {
                 aria-disabled="true"
               >
                 <span className="font-[family-name:var(--font-display)] text-cream text-sm tracking-wide">
-                  Patreon — Coming Soon
+                  Patreon - Coming Soon
                 </span>
               </div>
             </TornPaper>
@@ -182,7 +182,7 @@ export default function SupportPage() {
               </h2>
               <p className="font-[family-name:var(--font-body)] text-sm text-slate leading-relaxed mb-4">
                 As projects are funded and completed, we&apos;ll showcase them
-                here — so you can see exactly where your support goes and the
+                here - so you can see exactly where your support goes and the
                 creative work it brings to life.
               </p>
               <p className="font-[family-name:var(--font-handwritten)] text-lg text-slate/60 italic">

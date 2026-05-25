@@ -192,7 +192,7 @@ export default function Home() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.3 + (navItems.length + 1) * 0.1 + 0.4 }}
       >
-        psst — try dragging them ✦
+        psst - try dragging them ✦
       </motion.p>
     </section>
   );

@@ -36,7 +36,7 @@ export default function MediaPage() {
               Media
             </h1>
             <p className="font-[family-name:var(--font-body)] text-white/80 text-center">
-              Creative climbing media — translating lived experience into words,
+              Creative climbing media - translating lived experience into words,
               photos, and film.
             </p>
           </motion.div>

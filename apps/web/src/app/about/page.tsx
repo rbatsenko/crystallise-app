@@ -19,7 +19,7 @@ const pillars = [
   {
     title: "Community Events",
     description:
-      "The second branch of Crystallise is to host regular, in person events — ranging from movie nights to workshops, and from poetry readings to panel discussions. These community hubs offer the physical space for inspiration to be shared. Our events will be a catalyst for the blossoming of projects and connections.",
+      "The second branch of Crystallise is to host regular, in person events - ranging from movie nights to workshops, and from poetry readings to panel discussions. These community hubs offer the physical space for inspiration to be shared. Our events will be a catalyst for the blossoming of projects and connections.",
     color: "#c9a84c",
     rotation: 1.5,
   },
@@ -36,7 +36,7 @@ const team = [
   {
     name: "Hamish",
     role: "Founder",
-    bio: "A climber, filmmaker, and dreamer — Hamish started Crystallise to channel the creative energy of the climbing community into something lasting.",
+    bio: "A climber, filmmaker, and dreamer - Hamish started Crystallise to channel the creative energy of the climbing community into something lasting.",
   },
   {
     name: "Daniel",
@@ -84,7 +84,7 @@ export default function AboutPage() {
               culture within climbing media.
             </p>
             <p className="font-[family-name:var(--font-body)] text-base text-white/70 leading-relaxed">
-              We are at a key moment in the history of our sport — our lifestyle.
+              We are at a key moment in the history of our sport - our lifestyle.
               Will we seek expression or attention? Inspiration or cash? Love or
               cynicism? Crystallise is a gentle nudge towards the former, and a
               step towards a future we dream is possible.

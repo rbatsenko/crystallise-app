@@ -5,7 +5,17 @@ import Link from "next/link";
 import { useState } from "react";
 import Footer from "@/components/Footer";
 import PageTransition from "@/components/PageTransition";
+import { compressImage } from "./compressImage";
 import ExpandableTextarea from "./ExpandableTextarea";
+
+// Compress any image larger than this before uploading. Picks up phone
+// photos (typically 4-15 MB) while leaving already-small files alone.
+const COMPRESS_THRESHOLD_BYTES = 1 * 1024 * 1024;
+
+// Max total request body Vercel will accept for an App Router route
+// handler. Stay safely under it so we never trigger a platform-level 413
+// (which we can't intercept with a friendly error).
+const MAX_TOTAL_UPLOAD_BYTES = 4 * 1024 * 1024;
 
 const inputClasses =
   "w-full bg-cream border border-stone/40 rounded-none px-4 py-3 font-[family-name:var(--font-body)] text-charcoal text-sm focus:outline-none focus:border-gold transition-colors";
@@ -36,7 +46,12 @@ const EMPTY_LONG_FIELDS: Record<LongFieldKey, string> = {
   additional: "",
 };
 
-type SubmitState = "idle" | "submitting" | "success" | "error";
+type SubmitState =
+  | "idle"
+  | "compressing"
+  | "submitting"
+  | "success"
+  | "error";
 
 const ERROR_MESSAGES: Record<string, string> = {
   missing_required_fields: "Name, email, and overview are required.",
@@ -51,7 +66,14 @@ const ERROR_MESSAGES: Record<string, string> = {
   additional_too_long: "Additional info is too long.",
   upload_failed: "Image upload failed. Try again?",
   insert_failed: "Something went wrong saving your proposal.",
+  invalid_form: "We couldn't read the form data. Try again?",
 };
+
+const PAYLOAD_TOO_LARGE_MSG =
+  "Your images are still too large after compression. Try fewer or smaller photos.";
+const NETWORK_ERROR_MSG =
+  "Network error - check your connection and try again.";
+const GENERIC_ERROR_MSG = "Something went wrong. Try again?";
 
 export default function ProposePage() {
   const [fields, setFields] = useState<Record<LongFieldKey, string>>(
@@ -66,30 +88,68 @@ export default function ProposePage() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setSubmitState("submitting");
     setErrorMsg(null);
 
-    const formData = new FormData(e.currentTarget);
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const originalFiles = formData
+      .getAll("images")
+      .filter((v): v is File => v instanceof File && v.size > 0);
 
+    let processedFiles: File[] = originalFiles;
+    if (originalFiles.some((f) => f.size > COMPRESS_THRESHOLD_BYTES)) {
+      setSubmitState("compressing");
+      try {
+        processedFiles = await Promise.all(
+          originalFiles.map((file) =>
+            file.size > COMPRESS_THRESHOLD_BYTES
+              ? compressImage(file).catch((err) => {
+                  console.error("[propose] compression failed", err);
+                  return file;
+                })
+              : Promise.resolve(file),
+          ),
+        );
+      } catch (err) {
+        console.error("[propose] compression error", err);
+        processedFiles = originalFiles;
+      }
+    }
+
+    const totalBytes = processedFiles.reduce((sum, f) => sum + f.size, 0);
+    if (totalBytes > MAX_TOTAL_UPLOAD_BYTES) {
+      setErrorMsg(PAYLOAD_TOO_LARGE_MSG);
+      setSubmitState("error");
+      return;
+    }
+
+    formData.delete("images");
+    for (const file of processedFiles) formData.append("images", file);
+
+    setSubmitState("submitting");
     try {
       const res = await fetch("/api/propose", {
         method: "POST",
         body: formData,
       });
-      if (!res.ok) {
-        const payload = (await res.json().catch(() => ({}))) as {
-          error?: string;
-        };
-        setErrorMsg(
-          (payload.error && ERROR_MESSAGES[payload.error]) ||
-            "Something went wrong. Try again?",
-        );
+      if (res.ok) {
+        setSubmitState("success");
+        return;
+      }
+      if (res.status === 413) {
+        setErrorMsg(PAYLOAD_TOO_LARGE_MSG);
         setSubmitState("error");
         return;
       }
-      setSubmitState("success");
+      const payload = (await res.json().catch(() => ({}))) as {
+        error?: string;
+      };
+      setErrorMsg(
+        (payload.error && ERROR_MESSAGES[payload.error]) || GENERIC_ERROR_MSG,
+      );
+      setSubmitState("error");
     } catch {
-      setErrorMsg("Network error - check your connection and try again.");
+      setErrorMsg(NETWORK_ERROR_MSG);
       setSubmitState("error");
     }
   }
@@ -236,7 +296,8 @@ export default function ProposePage() {
               </label>
               <p className="text-xs text-slate/60 mb-2 font-[family-name:var(--font-body)]">
                 Upload any reference images, mood boards, or visuals that help
-                convey your idea. Up to 5 images, 5MB each (JPEG, PNG, WebP).
+                convey your idea. Up to 5 images (JPEG, PNG, WebP). Large
+                photos are automatically compressed before upload.
               </p>
               <input
                 type="file"
@@ -260,11 +321,18 @@ export default function ProposePage() {
             <div className="space-y-3">
               <button
                 type="submit"
-                disabled={submitState === "submitting"}
+                disabled={
+                  submitState === "compressing" ||
+                  submitState === "submitting"
+                }
                 className="torn-paper bg-gold px-8 py-3 font-[family-name:var(--font-display)] text-charcoal text-sm tracking-wide hover:bg-gold/80 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{ transform: "rotate(0.5deg)" }}
               >
-                {submitState === "submitting" ? "Sending…" : "Submit Idea"}
+                {submitState === "compressing"
+                  ? "Optimizing images…"
+                  : submitState === "submitting"
+                    ? "Sending…"
+                    : "Submit Idea"}
               </button>
               {submitState === "error" && errorMsg && (
                 <p className="font-[family-name:var(--font-body)] text-sm text-red-700">
